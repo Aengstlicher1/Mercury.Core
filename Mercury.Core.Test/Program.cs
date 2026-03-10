@@ -1,4 +1,5 @@
 ﻿using Mercury.Core.Http.Authentication;
+using Mercury.Core._New;
 
 namespace Mercury.Core.Test
 {
@@ -6,15 +7,7 @@ namespace Mercury.Core.Test
     {
         public static async Task Main()
         {
-            var config = new YouTubeMusicConfig()
-            {
-                GeographicalLocation = "DE",
-                Authenticator = new AnonymousAuthenticator(),
-            };
-            var client = new YouTubeMusicClient(config);
-
-            var page = await client.Search.AllAsync("Runaway");
-            var songs = page.Results.ToList();
+            var test = await YoutubeMusic.Search.SearchAsync("Runaway");
         }
     }
 }

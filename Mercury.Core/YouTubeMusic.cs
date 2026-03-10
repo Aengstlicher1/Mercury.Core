@@ -2,14 +2,14 @@
 using Mercury.Core.Http;
 using Mercury.Core.Http.Authentication;
 using Mercury.Core.Json;
-using Mercury.Core.Services.Albums;
-using Mercury.Core.Services.Artists;
-using Mercury.Core.Services.Musical;
-using Mercury.Core.Services.Musical.Songs;
-using Mercury.Core.Services.Musical.Videos;
-using Mercury.Core.Services.Playlists;
-using Mercury.Core.Services.Profiles;
-using Mercury.Core.Services.Search;
+using Mercury.Core.Models.Albums;
+using Mercury.Core.Models.Artists;
+using Mercury.Core.Models.Musical;
+using Mercury.Core.Models.Musical.Songs;
+using Mercury.Core.Models.Musical.Videos;
+using Mercury.Core.Models.Playlists;
+using Mercury.Core.Models.Profiles;
+using Mercury.Core.Models.Search;
 using Mercury.Core.Utils;
 
 namespace Mercury.Core;

@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using Mercury.Core.Http;
-using Mercury.Core.Services.Albums;
-using Mercury.Core.Services.Playlists;
-using Mercury.Core.Services.Search;
+using Mercury.Core.Models.Albums;
+using Mercury.Core.Models.Playlists;
+using Mercury.Core.Models.Search;
 
 namespace Mercury.Core.Utils;
 

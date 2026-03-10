@@ -1,5 +1,5 @@
 ﻿using Mercury.Core.Json;
-using Mercury.Core.Services;
+using Mercury.Core.Models;
 using Mercury.Core.Utils;
 
 namespace Mercury.Core.Http.Authentication;

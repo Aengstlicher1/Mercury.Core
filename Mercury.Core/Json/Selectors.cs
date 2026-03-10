@@ -1,5 +1,5 @@
-﻿using Mercury.Core.Services;
-using Mercury.Core.Services.Musical;
+﻿using Mercury.Core.Models;
+using Mercury.Core.Models.Musical;
 using Mercury.Core.Utils;
 
 namespace Mercury.Core.Json;

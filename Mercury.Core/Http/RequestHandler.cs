@@ -59,7 +59,7 @@ internal sealed class RequestHandler(
         ClientType clientType = ClientType.None,
         CancellationToken cancellationToken = default)
     {
-        // Prepare
+        // Prepare 
         Uri requestUri = new(url);
         HttpRequestMessage request = new(method, requestUri);
 

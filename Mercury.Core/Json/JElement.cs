@@ -61,18 +61,18 @@ internal readonly struct JElement
     {
         if (!IsUndefined && element.TryGetProperty(key, out JsonElement val))
         {
-#if DEBUG
+            #if DEBUG
             return new(val, $"{path}.{key}");
-#else
+            #else
             return new(val);
-#endif
+            #endif
         }
 
-#if DEBUG
+        #if DEBUG
         return new(default, $"{path}.{key}<MISSING>");
-#else
+        #else
         return new(default);
-#endif
+        #endif
     }
 
     /// <summary>
