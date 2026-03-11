@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mercury.Core\Mercury.Core.csproj" />
+    <ProjectReference Include="..\YouTubeMusicAPI\YouTubeMusicAPI.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 
-namespace Mercury.Core.Json;
+namespace YouTubeMusicAPI.Json;
 
 /// <summary>
 /// A lightweight wrapper around <see cref="JsonElement"/> that provides safer and more convenient access to the JSON data.

@@ -1,61 +1,43 @@
-﻿using Mercury.Core.Json;
-using Mercury.Core.Utils;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Mercury.Core.Models;
-
-/// <summary>
-/// Represents a thumbnail on YouTube Music.
-/// </summary>
-/// <remarks>
-/// Creates a new instance of the <see cref="Thumbnail"/> class.
-/// </remarks>
-/// <param name="url">The URL of this thumbnail.</param>
-/// <param name="width">The pixels width of this thumbnail.</param>
-/// <param name="height">The pixels height of this thumbnail.</param>
-public class Thumbnail(
-    string url,
-    int width,
-    int height)
+namespace Mercury.Core.Models
 {
-    /// <summary>
-    /// Parses a <see cref="JElement"/> into a <see cref="Thumbnail"/>.
-    /// </summary>
-    /// <param name="element">The <see cref="JElement"/> to parse.</param>
-    /// <returns>A <see cref="Thumbnail"/> representing the <see cref="JElement"/>.</returns>
-    internal static Thumbnail Parse(
-        JElement element)
+    public struct Thumbnail
     {
-        string url = element
-            .Get("url")
-            .AsString()
-            .OrThrow();
+        public Thumbnail(string url, Dimensions size)
+        {
+            Url = url;
+            Size = size;
+        }
+        public Thumbnail() { }
 
-        int width = element
-            .Get("width")
-            .AsInt32()
-            .OrThrow();
+        public string Url { get; set; }
+        public Dimensions Size { get; set; }
 
-        int height = element
-            .Get("height")
-            .AsInt32()
-            .OrThrow();
-
-        return new(url, width, height);
+        public override string ToString()
+        {
+            return $"{Size} - {Url.Substring(0, 24)}...";
+        }
     }
 
+    public struct Dimensions
+    {
+        public Dimensions (int height, int width)
+        {
+            Height = height;
+            Width = width;
+        }
 
-    /// <summary>
-    /// The URL of this thumbnail.
-    /// </summary>
-    public string Url { get; } = url;
+        public int Width { get; set; } = 0;
+        public int Height { get; set; } = 0;
 
-    /// <summary>
-    /// The pixels width of this thumbnail.
-    /// </summary>
-    public int Width { get; } = width;
-
-    /// <summary>
-    /// The pixels height of this thumbnail.
-    /// </summary>
-    public int Height { get; } = height;
+        public override string ToString()
+        {
+            return $"{Width}x{Height}";
+        }
+    }
 }
