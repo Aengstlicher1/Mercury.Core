@@ -15,7 +15,7 @@ namespace Mercury.Core.Models
         }
         public Thumbnail() { }
 
-        public string Url { get; set; }
+        public string Url { get; set; } = "";
         public Dimensions Size { get; set; }
 
         public override string ToString()

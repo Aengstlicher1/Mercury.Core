@@ -17,7 +17,7 @@ namespace Mercury.Core.Json.Parsers.Generic
             {
                 "Song" => Enums.MediaCategory.Song,
                 "Video" => Enums.MediaCategory.Video,
-                "Playlist" => DiffPlaylists(flex),
+                "Playlist" => Enums.MediaCategory.Playlist,
                 "Artist" => Enums.MediaCategory.Artist,
                 "EP" or "Album" or "Single" => Enums.MediaCategory.Album,
                 "Profile" => Enums.MediaCategory.Profile,
@@ -25,13 +25,6 @@ namespace Mercury.Core.Json.Parsers.Generic
                 "Episode" => Enums.MediaCategory.Episode,
                 _ => Enums.MediaCategory.None
             };
-        }
-
-        private static Enums.MediaCategory DiffPlaylists(JArray flex)
-        {
-            var author = FlexColumnParser.Parse(flex, 1 ,2);
-
-            return author == "Youtube Music" ? Enums.MediaCategory.FeaturedPlaylist : Enums.MediaCategory.CommunityPlaylist;
         }
     }
 }

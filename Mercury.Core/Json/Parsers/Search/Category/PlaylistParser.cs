@@ -3,7 +3,7 @@ using Mercury.Core.Models;
 using Mercury.Core.Utils;
 
 
-namespace Mercury.Core.Json.Parsers.Search
+namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class PlaylistParser
     {
@@ -13,13 +13,16 @@ namespace Mercury.Core.Json.Parsers.Search
 
             var flex = FlexColumnParser.GetFlex(renderer);
 
+            var info = FlexColumnParser.Parse(flex, 1, 2);
+
             return new Playlist()
             {
                 Id = IdParser.ParseBrowse(renderer),
-                Title = FlexColumnParser.Parse(flex,0),
-                Artists = FlexColumnParser.Parse(flex, 1, 2),
-                Thumbnails = thumbnails,
-                Views = FlexColumnParser.Parse(flex, 1, 4)
+                Title = FlexColumnParser.Parse(flex, 0),
+                Artists = FlexColumnParser.Parse(flex, 1),
+                Views = info.Contains("views") ? info : string.Empty,
+                ItemCount = info.Contains("views") ? string.Empty : info,
+                Thumbnails = thumbnails
             };
         }
     }

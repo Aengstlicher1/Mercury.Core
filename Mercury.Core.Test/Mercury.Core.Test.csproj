@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="YouTubeMusicAPI" Version="3.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Mercury.Core\Mercury.Core.csproj" />
-    <ProjectReference Include="..\YouTubeMusicAPI\YouTubeMusicAPI.csproj" />
   </ItemGroup>
 
 </Project>

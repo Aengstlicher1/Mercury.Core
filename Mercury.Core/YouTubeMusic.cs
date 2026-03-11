@@ -5,5 +5,7 @@ namespace Mercury.Core
     public static class YoutubeMusic
     {
         public static SearchService Search = new SearchService();
+
+        public static PlayerService Player = new PlayerService();
     }
 }

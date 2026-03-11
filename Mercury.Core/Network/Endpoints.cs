@@ -27,6 +27,11 @@ internal static class Endpoints
     public const string Search = MusicApiUrl + "/search";
 
     /// <summary>
+    /// The path to the player API.
+    /// </summary>
+    public const string Player = MusicApiUrl + "/player";
+
+    /// <summary>
     /// The path to the search suggestions API.
     /// </summary>
     public const string SearchSuggestions = MusicApiUrl + "/music/get_search_suggestions";

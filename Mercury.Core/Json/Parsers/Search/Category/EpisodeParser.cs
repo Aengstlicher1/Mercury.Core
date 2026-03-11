@@ -3,7 +3,7 @@ using Mercury.Core.Models;
 using Mercury.Core.Utils;
 
 
-namespace Mercury.Core.Json.Parsers.Search
+namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class EpisodeParser
     {
@@ -15,10 +15,10 @@ namespace Mercury.Core.Json.Parsers.Search
 
             return new Episode()
             {
-                Id = IdParser.ParseBrowse(renderer),
+                Id = renderer.Get("playlistItemData").Get("videoId").AsString().Or(string.Empty),
                 Title = FlexColumnParser.Parse(flex, 0),
-                Date = FlexColumnParser.Parse(flex, 1, 2),
-                PodcastName = FlexColumnParser.Parse(flex, 1, 4),
+                Date = FlexColumnParser.Parse(flex, 1),
+                PodcastName = FlexColumnParser.Parse(flex, 1, 2),
                 Thumbnails = thumbnails,
             };
         }

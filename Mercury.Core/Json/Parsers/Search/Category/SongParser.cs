@@ -2,7 +2,7 @@
 using Mercury.Core.Models;
 using Mercury.Core.Utils;
 
-namespace Mercury.Core.Json.Parsers.Search
+namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class SongParser
     {
@@ -17,8 +17,10 @@ namespace Mercury.Core.Json.Parsers.Search
             {
                 Id = IdParser.ParseWatch(renderer),
                 Thumbnails = thumbnails,
-                Title = FlexColumnParser.Parse(flex, 0)!,
-                Artists = FlexColumnParser.Parse(flex, 1, 2)!
+                Title = FlexColumnParser.Parse(flex, 0),
+                Artists = FlexColumnParser.Parse(flex, 1),
+                Album = FlexColumnParser.Parse(flex, 1, 2),
+                Duration = FlexColumnParser.Parse(flex, 1, 4)
             };
         }
     }

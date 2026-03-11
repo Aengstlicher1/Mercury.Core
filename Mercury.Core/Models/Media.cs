@@ -4,9 +4,9 @@
 public abstract class Media
 {
     public Thumbnail[] Thumbnails { get; set; } = new Thumbnail[0];
-    public virtual string Id { get; init; }
-    public virtual string Title { get; init; }
-    public virtual string Artists { get; init; }
+    public virtual string Id { get; init; } = "";
+    public virtual string Title { get; init; } = "";
+    public virtual string Artists { get; init; } = "";
 }
 
 /// <summary>Song search result with duration</summary>
@@ -62,6 +62,8 @@ public class Artist : Media
 public class Playlist : Media
 {
     public string Views { get; set; } = "";
+
+    public string ItemCount { get; set; } = "";
     
     public string Url => $"https://music.youtube.com/playlist?list={Id}";
 }

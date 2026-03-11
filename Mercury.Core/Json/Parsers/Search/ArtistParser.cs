@@ -13,34 +13,17 @@ namespace Mercury.Core.Json.Parsers.Search
     {
         internal static Artist Parse(JElement renderer)
         {
-            // Get the Thumbnails
-            var thumbs = renderer
-                .Get("thumbnail")
-                .Get("musicThumbnailRenderer")
-                .Get("thumbnail")
-                .Get("thumbnails")
-                .AsArray()
-                .Or(JArray.Empty);
-
-            var thumbnails = ThumbnailParser.Parse(thumbs);
+            var thumbnails = ThumbnailParser.Parse(renderer);
 
             var flex = FlexColumnParser.GetFlex(renderer);
 
             return new Artist()
             {
-                Id = GetId(renderer),
+                Id = IdParser.ParseBrowse(renderer),
                 Title = FlexColumnParser.Parse(flex, 0),
                 Audience = FlexColumnParser.Parse(flex, 1, 2),
                 Thumbnails = thumbnails,
             };
         }
-
-        private static string GetId(JElement renderer)
-            =>  renderer
-                .Get("navigationEndpoint")
-                .Get("browseEndpoint")
-                .Get("browseId")
-                .AsString()
-                .Or(string.Empty);
     }
 }

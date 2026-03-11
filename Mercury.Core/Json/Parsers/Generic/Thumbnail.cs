@@ -11,8 +11,16 @@ namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class ThumbnailParser
     {
-        internal static Thumbnail[] Parse(JArray thumbs)
+        internal static Thumbnail[] Parse(JElement renderer)
         {
+            var thumbs = renderer
+                .Get("thumbnail")
+                .Get("musicThumbnailRenderer")
+                .Get("thumbnail")
+                .Get("thumbnails")
+                .AsArray()
+                .Or(JArray.Empty);
+
             if (thumbs != null && thumbs.Length > 0)
             {
                 Collection<Thumbnail> thumbnails = new ();

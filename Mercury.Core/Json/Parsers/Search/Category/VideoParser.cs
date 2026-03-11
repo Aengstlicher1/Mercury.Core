@@ -2,7 +2,7 @@
 using Mercury.Core.Models;
 using Mercury.Core.Utils;
 
-namespace Mercury.Core.Json.Parsers.Search
+namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class VideoParser
     {
@@ -17,8 +17,9 @@ namespace Mercury.Core.Json.Parsers.Search
             {
                 Id = IdParser.ParseWatch(renderer),
                 Title = FlexColumnParser.Parse(flex, 0),
-                Artists = FlexColumnParser.Parse(flex, 1, 2),
-                Views = FlexColumnParser.Parse(flex, 1, 4),
+                Artists = FlexColumnParser.Parse(flex, 1),
+                Views = FlexColumnParser.Parse(flex, 1, 2),
+                Duration = FlexColumnParser.Parse(flex, 1, 4),
                 Thumbnails = thumbnails,
             };
         }

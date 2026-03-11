@@ -18,60 +18,141 @@ namespace Mercury.Core.Services
             CancellationToken cToken = default
         )
         {
-            if (string.IsNullOrEmpty(query))
-                throw new ArgumentNullException("query");
-
-            Dictionary<string, object?> payload = new ()
+            try
             {
-                { "query", query }
-            };
+                if (string.IsNullOrEmpty(query))
+                    throw new ArgumentNullException("query");
 
-            var response = await RequestHandler.PostAsync(Endpoints.Search, payload, ClientType.WebMusic, cToken);
-            using IDisposable _ = response.ParseJson(out var json);
+                Dictionary<string, object?> payload = new()
+                {
+                    { "query", query }
+                };
 
-            var renderers = json
-                .Get("contents")
-                .Get("tabbedSearchResultsRenderer")
-                .Get("tabs").GetAt(0)
-                .Get("tabRenderer")
-                .Get("content")
-                .Get("sectionListRenderer")
-                .Get("contents");
-                    
-            var topResult = renderers
-                .GetAt(1)
-                .Get("musicCardShelfRenderer");
+                var response = await RequestHandler.PostAsync(Endpoints.Search, payload, ClientType.WebMusic, cToken);
 
-            var normalResults = renderers
-                .GetAt(2).Get("musicShelfRenderer")
-                .Get("contents")
-                .AsArray()
-                .Or(JArray.Empty);
+                cToken.ThrowIfCancellationRequested();
 
-            Collection<Media> results = new Collection<Media>();
-            foreach (var result in normalResults)
-            {
-                var renderer = result.Get("musicResponsiveListItemRenderer");
-                var flex = FlexColumnParser.GetFlex(renderer);
-                var category = CategoryParser.Parse(flex);
+                using IDisposable _ = response.ParseJson(out var json);
 
-                results.Add
-                (
-                    category switch
-                    {
-                        Enums.MediaCategory.Song    => SongParser.Parse(renderer),
-                        Enums.MediaCategory.Video   => VideoParser.Parse(renderer),
-                        Enums.MediaCategory.Artist   => ArtistParser.Parse(renderer),
-                        Enums.MediaCategory.Album   => AlbumParser.Parse(renderer),
-                        Enums.MediaCategory.FeaturedPlaylist => PlaylistParser.Parse(renderer), 
-                        Enums.MediaCategory.CommunityPlaylist => PlaylistParser.Parse(renderer),
-                        Enums.MediaCategory.Episode => EpisodeParser.Parse(renderer),
-                        _ => null!
-                    }
-                );
+                var renderers = json
+                    .Get("contents")
+                    .Get("tabbedSearchResultsRenderer")
+                    .Get("tabs").GetAt(0)
+                    .Get("tabRenderer")
+                    .Get("content")
+                    .Get("sectionListRenderer")
+                    .Get("contents");
+
+                var topResult = renderers
+                    .GetAt(1)
+                    .Get("musicCardShelfRenderer");
+
+                var normalResults = renderers
+                    .GetAt(2).Get("musicShelfRenderer")
+                    .Get("contents")
+                    .AsArray()
+                    .Or(JArray.Empty);
+
+                Collection<Media> results = new Collection<Media>();
+                foreach (var result in normalResults)
+                {
+                    cToken.ThrowIfCancellationRequested();
+
+                    var renderer = result.Get("musicResponsiveListItemRenderer");
+                    var flex = FlexColumnParser.GetFlex(renderer);
+                    var category = CategoryParser.Parse(flex);
+
+                    results.Add
+                    (
+                        category switch
+                        {
+                            Enums.MediaCategory.Song        => SongParser.Parse(renderer),
+                            Enums.MediaCategory.Video       => VideoParser.Parse(renderer),
+                            Enums.MediaCategory.Artist      => ArtistParser.Parse(renderer),
+                            Enums.MediaCategory.Album       => AlbumParser.Parse(renderer),
+                            Enums.MediaCategory.Playlist    => PlaylistParser.Parse(renderer),
+                            Enums.MediaCategory.Episode     => EpisodeParser.Parse(renderer),
+                            Enums.MediaCategory.Profile     => ProfileParser.Parse(renderer),
+                            Enums.MediaCategory.Podacast    => PodcastParser.Parse(renderer),
+                            _ => null!
+                        }
+                    );
+                }
+
+                return results;
             }
+            catch (TaskCanceledException) { }
+            return null!;
+        }
 
-            return results;
+        public async Task<Collection<Media>?> SearchCategoryAsync(
+            string query,
+            Enums.SearchFilter filter,
+            bool ignoreSpelling = true,
+            CancellationToken cToken = default)
+        {
+            try 
+            {
+                if (string.IsNullOrEmpty(query))
+                    throw new ArgumentNullException("query");
+
+                Dictionary<string, object?> payload = new()
+                {
+                    { "query", query },
+                    { "params", filter.ToParam() }
+                }; 
+
+                var response = await RequestHandler.PostAsync(Endpoints.Search, payload, ClientType.WebMusic, cToken);
+
+                cToken.ThrowIfCancellationRequested();
+
+                using IDisposable _ = response.ParseJson(out var json);
+
+                var shelfResults = json
+                        .Get("contents")
+                        .Get("tabbedSearchResultsRenderer")
+                        .Get("tabs").GetAt(0)
+                        .Get("tabRenderer")
+                        .Get("content")
+                        .Get("sectionListRenderer")
+                        .Get("contents")
+                        .GetAt(1)
+                        .Get("musicShelfRenderer")
+                        .Get("contents")
+                        .AsArray()
+                        .Or(JArray.Empty);
+
+                Collection<Media> results = new Collection<Media>();
+                foreach (var result in shelfResults)
+                {
+                    cToken.ThrowIfCancellationRequested();
+
+                    var renderer = result.Get("musicResponsiveListItemRenderer");
+                    var flex = FlexColumnParser.GetFlex(renderer);
+                    var category = CategoryParser.Parse(flex);
+
+                    results.Add
+                    (
+                        filter switch
+                        {
+                            Enums.SearchFilter.Songs                => Json.Parsers.Search.Category.SongParser.Parse(renderer),
+                            Enums.SearchFilter.Videos               => Json.Parsers.Search.Category.VideoParser.Parse(renderer),
+                            Enums.SearchFilter.Artists              => ArtistParser.Parse(renderer),
+                            Enums.SearchFilter.Albums               => AlbumParser.Parse(renderer),
+                            Enums.SearchFilter.FeaturedPlaylists    => Json.Parsers.Search.Category.PlaylistParser.Parse(renderer),
+                            Enums.SearchFilter.CommunityPlaylists   => Json.Parsers.Search.Category.PlaylistParser.Parse(renderer),
+                            Enums.SearchFilter.Episodes             => Json.Parsers.Search.Category.EpisodeParser.Parse(renderer),
+                            Enums.SearchFilter.Profiles             => ProfileParser.Parse(renderer),
+                            Enums.SearchFilter.Podcasts             => Json.Parsers.Search.Category.PodcastParser.Parse(renderer),
+                            _ => null!
+                        }
+                    );
+                }
+
+                return results;
+            }
+            catch (TaskCanceledException) { }
+            return null;
         }
     }
 }
