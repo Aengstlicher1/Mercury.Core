@@ -21,20 +21,28 @@ namespace Mercury.Core.Services
 
             using IDisposable _ = response.ParseJson(out var json);
 
+            JArray formats = json
+                .Get("streamingData")
+                .Get("formats")
+                .AsArray()
+                .Or(JArray.Empty);
+
             JArray adaptiveFormats = json
                 .Get("streamingData")
                 .Get("adaptiveFormats")
                 .AsArray()
                 .Or(JArray.Empty);
 
+            var allFormats = formats.Concat(adaptiveFormats);
+
             Collection<StreamInfo> infos = new ();
 
-            foreach (var format in adaptiveFormats)
+            foreach (var format in allFormats)
             {
                 infos.Add(StreamInfoParser.Parse(format));
             }
 
-            var data = new StreamingData();
+            var data = StreamingDataParser.Parse(json);
             data.Streams = infos.ToArray();
 
             return data;

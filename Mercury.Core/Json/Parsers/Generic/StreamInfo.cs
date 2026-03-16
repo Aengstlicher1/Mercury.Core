@@ -28,8 +28,11 @@ namespace Mercury.Core.Json.Parsers.Generic
                 MimeType = format.Get("mimeType").AsString().Or(string.Empty),
                 Bitrate = format.Get("bitrate").AsInt32().Or(0),
                 Quality = format.Get("quality").AsString().Or(string.Empty),
-                Width = format.Get("width").AsInt32().Or(0),
-                Height = format.Get("height").AsInt32().Or(0),
+                Size = new Dimensions()
+                {
+                    Height = format.Get("height").AsInt32().Or(0),
+                    Width = format.Get("width").AsInt32().Or(0)
+                },
                 Fps = format.Get("fps").AsInt32().Or(0),
                 QualityLabel = format.Get("qualityLabel").AsString().Or(string.Empty),
                 AudioQuality = format.Get("audioQuality").AsString().Or(string.Empty)
@@ -45,8 +48,11 @@ namespace Mercury.Core.Json.Parsers.Generic
                 MimeType = format.Get("mimeType").AsString().Or(string.Empty),
                 Bitrate = format.Get("bitrate").AsInt32().Or(0),
                 Quality = format.Get("quality").AsString().Or(string.Empty),
-                Width = format.Get("width").AsInt32().Or(0),
-                Height = format.Get("height").AsInt32().Or(0),
+                Size = new Dimensions()
+                {
+                    Height = format.Get("height").AsInt32().Or(0),
+                    Width = format.Get("width").AsInt32().Or(0)
+                },
                 Fps = format.Get("fps").AsInt32().Or(0),
                 QualityLabel = format.Get("qualityLabel").AsString().Or(string.Empty),
                 AverageBitrate = format.Get("averageBitrate").AsInt32().Or(0)
@@ -55,6 +61,8 @@ namespace Mercury.Core.Json.Parsers.Generic
 
         private static AudioStreamInfo ParseAudio(JElement format)
         {
+            var sampleRateStr = format.Get("audioSampleRate").AsString().Or(string.Empty);
+
             return new AudioStreamInfo()
             {
                 ITag = format.Get("itag").AsInt32().Or(0),
@@ -63,20 +71,21 @@ namespace Mercury.Core.Json.Parsers.Generic
                 Bitrate = format.Get("bitrate").AsInt32().Or(0),
                 Quality = format.Get("quality").AsString().Or(string.Empty),
                 AudioQuality = format.Get("audioQuality").AsString().Or(string.Empty),
-                AudioSampleRate = format.Get("audioSampleRate").AsInt32().Or(0),
-                AverageBitrate = format.Get("averageBitrate").AsInt32().Or(0),
-                LoudnessDb = format.Get("loudnessDb").AsDouble().Or(0.0)
+                AudioSampleRate = int.Parse(sampleRateStr),
+                AverageBitrate = format.Get("averageBitrate").AsInt32().Or(0)
             };
         }
 
         private static StreamInfoType GetInfoType(JElement format)
         {
-            if (format.Contains("initRange", out JElement _))
+            if (format.Contains("xtags", out JElement _))
                 return StreamInfoType.Muxed;
-            else if (format.Contains("audioSampleRate", out JElement _))
+            else if (format.Get("mimeType").AsString().Or(string.Empty).Contains("video"))
+                return StreamInfoType.Video;
+            else if (format.Get("mimeType").AsString().Or(string.Empty).Contains("audio"))
                 return StreamInfoType.Audio;
             else
-                return StreamInfoType.Video;
+                throw new ArgumentException("WTF happened!?");
         }
 
         internal enum StreamInfoType

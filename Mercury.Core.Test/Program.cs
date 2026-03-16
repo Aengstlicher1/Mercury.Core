@@ -7,9 +7,14 @@ namespace Mercury.Core.Test
     {
         public static async Task Main()
         {
-            var medias = await YoutubeMusic.Search.SearchCategoryAsync("Runaway", Enums.SearchFilter.Songs);
+            var medias = await YoutubeMusic.Search.SearchAsync("Runaway");
 
-            var stream = await YoutubeMusic.Player.GetStreamAsync(medias!.First().Id);
+            var streamingData = await YoutubeMusic.Player.GetStreamAsync(medias!.First().Id);
+
+            foreach (var stream in streamingData.Streams)
+            {
+                Console.WriteLine(stream.Url);
+            }
         }
     }
 }

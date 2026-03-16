@@ -14,8 +14,7 @@ namespace Mercury.Core.Models
         public int ViewCount { get; init; }
 
         public TimeSpan Duration { get; init; }
-        public TimeSpan ExpiresIn { get; init; }
         public DateTime ExpiresAt { get; init; }
-        public StreamInfo[] Streams { get; set; }
+        public StreamInfo[] Streams { get; set; } = new StreamInfo[0];
     }
 }
