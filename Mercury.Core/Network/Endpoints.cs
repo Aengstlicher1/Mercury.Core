@@ -1,4 +1,4 @@
-﻿namespace Mercury.Core.Utils.Network;
+﻿namespace Mercury.Core.Network;
 
 /// <summary>
 /// Provides constants for all kinds of YouTube URLs.

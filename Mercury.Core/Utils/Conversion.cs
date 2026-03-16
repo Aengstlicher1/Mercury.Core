@@ -1,14 +1,13 @@
 ﻿using System.Globalization;
-using Mercury.Core.Json;
-using Mercury.Core.Models;
-using Mercury.Core.Utils.Network;
+using Mercury.Core.Network;
+using static Mercury.Core.Models.Enums;
 
 namespace Mercury.Core.Utils;
 
 /// <summary>
 /// Contains extension methods for converting data types.
 /// </summary>
-internal static class Conversion
+public static class Conversion
 {
     /// <summary>
     /// Converts a <see cref="ClientType"/> to a <see cref="Client"/>.
@@ -16,7 +15,7 @@ internal static class Conversion
     /// <param name="type">The client type.</param>
     /// <returns>A <see cref="Client"/> representing the type.</returns>
     /// <exception cref="ArgumentException">Occurs when an invalid client type is passed.</exception>
-    public static Client? ToClient(
+    internal static Client? ToClient(
         this ClientType type) =>
         type switch
         {
@@ -181,5 +180,36 @@ internal static class Conversion
             return result;
 
         return null;
+    }
+
+    public static SearchFilter ToFilter(this MediaCategory category)
+    {
+        return category switch
+        {
+            MediaCategory.Song      => SearchFilter.Songs,
+            MediaCategory.Video     => SearchFilter.Videos,
+            MediaCategory.Playlist  => SearchFilter.CommunityPlaylists,
+            MediaCategory.Album     => SearchFilter.Albums,
+            MediaCategory.Artist    => SearchFilter.Artists,
+            MediaCategory.Podacast  => SearchFilter.Podcasts,
+            MediaCategory.Episode   => SearchFilter.Episodes,
+            _                       => SearchFilter.Songs
+        };
+    }
+
+    public static MediaCategory ToCategory(this SearchFilter category)
+    {
+        return category switch
+        {
+            SearchFilter.Songs                  => MediaCategory.Song,
+            SearchFilter.Videos                 => MediaCategory.Video,
+            SearchFilter.CommunityPlaylists     => MediaCategory.Playlist,
+            SearchFilter.FeaturedPlaylists      => MediaCategory.Playlist,
+            SearchFilter.Albums                 => MediaCategory.Album,
+            SearchFilter.Artists                => MediaCategory.Artist,
+            SearchFilter.Podcasts               => MediaCategory.Podacast,
+            SearchFilter.Episodes               => MediaCategory.Episode,
+            _                                   => MediaCategory.None
+        };
     }
 }

@@ -2,15 +2,15 @@
 using Mercury.Core.Json.Parsers.Generic;
 using Mercury.Core.Models;
 using Mercury.Core.Utils;
-using Mercury.Core.Utils.Network;
+using Mercury.Core.Network;
 using System.Collections.ObjectModel;
 using System.Data;
 
 namespace Mercury.Core.Services
 {
-    public class PlayerService
+    public sealed class PlayerService
     {
-        public async Task<StreamingData?> GetStreamAsync(string videoId, CancellationToken cToken = default)
+        public async Task<StreamingData?> GetStreamDataAsync(string videoId, CancellationToken cToken = default)
         {
             Dictionary<string, object?> payload = new()
             {

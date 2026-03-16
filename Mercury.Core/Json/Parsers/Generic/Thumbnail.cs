@@ -11,7 +11,7 @@ namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class ThumbnailParser
     {
-        internal static Thumbnail[] Parse(JElement renderer)
+        internal static ThumbArray Parse(JElement renderer)
         {
             var thumbs = renderer
                 .Get("thumbnail")
@@ -40,10 +40,10 @@ namespace Mercury.Core.Json.Parsers.Generic
                     );
                 }
 
-                return thumbnails.ToArray();
+                return new ThumbArray(thumbnails.ToArray());
             }
             else
-                return new Thumbnail[0];
+                return ThumbArray.Empty;
         }
     }
 }

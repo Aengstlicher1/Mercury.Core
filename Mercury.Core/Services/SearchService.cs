@@ -4,7 +4,7 @@ using Mercury.Core.Json.Parsers.Search;
 using Mercury.Core.Json.Parsers.Generic;
 using Mercury.Core.Models;
 using Mercury.Core.Utils;
-using Mercury.Core.Utils.Network;
+using Mercury.Core.Network;
 using System.Collections.ObjectModel;
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,28 @@ using System.Threading.Tasks;
 
 namespace Mercury.Core.Models
 {
+    public struct ThumbArray : IEnumerable
+    {
+        public ThumbArray(Thumbnail[] thumbnails) 
+        {
+            Thumbs = thumbnails;
+        }
+
+        public Thumbnail[] Thumbs { get; set; }
+
+        public Thumbnail HighestRes => Thumbs.MaxBy(t => t.Size.Height);
+        public Thumbnail LowestRes => Thumbs.MinBy(t => t.Size.Height);
+
+        public IEnumerator GetEnumerator()
+            => Thumbs.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public static ThumbArray Empty { get => new ThumbArray(); }
+    }
+
     public struct Thumbnail
     {
         public Thumbnail(string url, Dimensions size)

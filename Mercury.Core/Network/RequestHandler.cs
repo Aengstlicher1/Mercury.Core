@@ -3,11 +3,11 @@ using Mercury.Core.Utils;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-namespace Mercury.Core.Utils.Network
+namespace Mercury.Core.Network
 {
     internal static class RequestHandler
     {
-        readonly static HttpClient httpClient = new HttpClient();
+        public readonly static HttpClient httpClient = new HttpClient();
 
         const string DefaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36";
 

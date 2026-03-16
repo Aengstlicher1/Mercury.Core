@@ -1,4 +1,4 @@
-﻿namespace Mercury.Core.Utils.Network;
+﻿namespace Mercury.Core.Network;
 
 /// <summary>
 /// Represents the type of YouTube Music client used for making API requests.
