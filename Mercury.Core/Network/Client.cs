@@ -1,218 +1,186 @@
-﻿namespace Mercury.Core.Utils.Network;
+﻿using System.Net.Http.Headers;
 
-/// <summary>
-/// Represents the client used for making requests to the YouTube API.
-/// </summary>
-/// <param name="hl">The HL parameter used for setting the language of the request.</param>
-/// <param name="gl">The GL parameter used for setting the region of the request.</param>
-/// <param name="clientName">The name of the client making the request.</param>
-/// <param name="clientVersion">The version of the client making the request.</param>
-/// <param name="osName">The operating system name of the client.</param>
-/// <param name="osVersion">The version of the operating system of the client.</param>
-/// <param name="platform">The platform on which the client is running (e.g., Android, iOS).</param>
-/// <param name="timeZone">The time zone of the client.</param>
-/// <param name="userAgent">The user agent string for the client.</param>
-/// <param name="deviceMake">The make of the device on which the client is running.</param>
-/// <param name="deviceModel">The model of the device on which the client is running.</param>
-/// <param name="utcOffsetMinutes">The UTC offset in minutes for the client's time zone.</param>
-/// <remarks>
-/// Creates a new instance of the <see cref="Client"/> class.
-/// </remarks>
-internal sealed class Client(
-    string hl,
-    string gl,
-    string platform,
-    string clientName,
-    string clientVersion,
-    string deviceMake,
-    string deviceModel,
-    string osName,
-    string osVersion,
-    string userAgent,
-    string timeZone,
-    int utcOffsetMinutes)
+internal sealed class Client : Dictionary<string, object>
 {
-    /// <summary>
-    /// A template <see cref="Client"/> instance which represents the YouTube Music Web client.
-    /// </summary>
-    /// <remarks>
-    /// Notes:<br/>
-    /// - Proof of Origin Token for streaming required.
-    /// </remarks>
-    /// <returns>A <see cref="Client"/> which represents the YouTube Music Web client.</returns>
-    public static readonly Client WebMusic =
-        new(hl: "en",
-            gl: "US",
-            platform: "DESKTOP",
-            clientName: "WEB_REMIX",
-            clientVersion: "1.20251111.09.00",
-            deviceMake: "",
-            deviceModel: "",
-            osName: "Windows",
-            osVersion: "10.0",
-            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
-            timeZone: "UTC",
-            utcOffsetMinutes: 0)
-        {
-            BrowserName = "Chrome",
-            BrowserVersion = "142.0.0.0",
-            OriginalUrl = "https://music.youtube.com/"
-        };
+    public static readonly Client WebMusic = new()
+    {
+        ["hl"] = "en",
+        ["gl"] = "US",
+        ["platform"] = "DESKTOP",
+        ["clientName"] = "WEB_REMIX",
+        ["clientVersion"] = "1.20251111.09.00",
+        ["deviceMake"] = "",
+        ["deviceModel"] = "",
+        ["osName"] = "Windows",
+        ["osVersion"] = "10.0",
+        ["userAgent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+        ["browserName"] = "Chrome",
+        ["browserVersion"] = "142.0.0.0",
+        ["originalUrl"] = "https://music.youtube.com/",
+        ["clientFormFactor"] = "UNKNOWN_FORM_FACTOR",
+        ["screenHeightPoints"] = 1440,
+        ["screenWidthPoints"] = 2560,
+        ["screenDensityFloat"] = 1f,
+        ["screenPixelDensity"] = 1,
+        ["userInterfaceTheme"] = "USER_INTERFACE_THEME_DARK",
+        ["timeZone"] = "UTC",
+        ["utcOffsetMinutes"] = 0
+    };
 
-    /// <summary>
-    /// A template <see cref="Client"/> instance which represents the YouTube Music iOS client.
-    /// </summary>
-    /// <remarks>
-    /// Notes:<br/>
-    /// - Account cookies not supported.<br/>
-    /// - Provides HLS (m3u8) streaming formats .
-    /// </remarks>
-    /// <returns>A <see cref="Client"/> which represents the YouTube iOS client.</returns>
-    public static readonly Client IOSMusic =
-        new(hl: "en",
-            gl: "US",
-            platform: "MOBILE",
-            clientName: "IOS_MUSIC",
-            clientVersion: "7.21.50",
-            deviceMake: "Apple",
-            deviceModel: "iPhone16,2",
-            osName: "iOS",
-            osVersion: "18.1.0.22B83",
-            userAgent: "com.google.ios.youtube.music/7.21.50 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X; US)",
-            timeZone: "UTC",
-            utcOffsetMinutes: 0);
+    public static readonly Client IOSMusic = new()
+    {
+        ["hl"] = "en",
+        ["gl"] = "US",
+        ["platform"] = "MOBILE",
+        ["clientName"] = "IOS_MUSIC",
+        ["clientVersion"] = "7.21.50",
+        ["clientFormFactor"] = "UNKNOWN_FORM_FACTOR",
+        ["deviceMake"] = "Apple",
+        ["deviceModel"] = "iPhone16,2",
+        ["osName"] = "iOS",
+        ["osVersion"] = "18.1.0.22B83",
+        ["userAgent"] = "com.google.ios.youtube.music/7.21.50 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X; US)",
+        ["screenHeightPoints"] = 1440,
+        ["screenWidthPoints"] = 2560,
+        ["screenDensityFloat"] = 1f,
+        ["screenPixelDensity"] = 1,
+        ["userInterfaceTheme"] = "USER_INTERFACE_THEME_DARK",
+        ["timeZone"] = "UTC",
+        ["utcOffsetMinutes"] = 0
+    };
 
+    public static readonly Client Web = new()
+    {
+        ["hl"] = "en",
+        ["gl"] = "US",
+        ["platform"] = "DESKTOP",
+        ["clientName"] = "WEB",
+        ["clientVersion"] = "2.20250312.04.00",
+        ["deviceMake"] = "",
+        ["deviceModel"] = "",
+        ["osName"] = "Windows",
+        ["osVersion"] = "10.0",
+        ["userAgent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+        ["browserName"] = "Chrome",
+        ["browserVersion"] = "142.0.0.0",
+        ["originalUrl"] = "https://www.youtube.com/",
+        ["clientFormFactor"] = "UNKNOWN_FORM_FACTOR",
+        ["screenHeightPoints"] = 1440,
+        ["screenWidthPoints"] = 2560,
+        ["screenDensityFloat"] = 1f,
+        ["screenPixelDensity"] = 1,
+        ["userInterfaceTheme"] = "USER_INTERFACE_THEME_DARK",
+        ["timeZone"] = "UTC",
+        ["utcOffsetMinutes"] = 0,
+        ApiKey = "?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    };
 
-    /// <summary>
-    /// The HL parameter used for setting the language of the request.
-    /// </summary>
-    public string Hl { get; set; } = hl;
+    public static readonly Client Android = new()
+    {
+        ["hl"] = "en",
+        ["gl"] = "US",
+        ["platform"] = "MOBILE",
+        ["clientName"] = "ANDROID",
+        ["clientVersion"] = "19.29.37",
+        ["deviceMake"] = "Google",
+        ["deviceModel"] = "Pixel 8",
+        ["osName"] = "Android",
+        ["osVersion"] = "14",
+        ["androidSdkVersion"] = 34,
+        ["userAgent"] = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; US) gzip",
+        ["timeZone"] = "UTC",
+        ["utcOffsetMinutes"] = 0,
+        Headers = [ new("X-Goog-Api-Format-Version", "2") ]
+    };
 
-    /// <summary>
-    /// The GL parameter used for setting the region of the request.
-    /// </summary>
-    public string Gl { get; set; } = gl;
+    public static readonly Client AndroidVR = new()
+    {
+        ["hl"] = "en",
+        ["gl"] = "US",
+        ["platform"] = "MOBILE",
+        ["clientName"] = "ANDROID_VR",
+        ["clientVersion"] = "1.60.19",
+        ["deviceMake"] = "Meta",
+        ["deviceModel"] = "Quest 3",
+        ["osName"] = "Android",
+        ["osVersion"] = "12L",
+        ["androidSdkVersion"] = 32,
+        ["userAgent"] = "com.google.android.apps.youtube.vr.oculus/1.60.19 (Linux; U; Android 12L; US) gzip",
+        ["timeZone"] = "UTC",
+        ["utcOffsetMinutes"] = 0,
+        ApiKey = "?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39wnew"
+    };
 
-    /// <summary>
-    /// The platform on which the client is running (e.g., Android, iOS).
-    /// </summary>
-    public string Platform { get; set; } = platform;
+    // ── Convenience Properties ───────────────────────────────────────────
 
-    /// <summary>
-    /// The name of the client making the request.
-    /// </summary>
-    public string ClientName { get; set; } = clientName;
+    public KeyValuePair<string, string>[]? Headers
+    {
+        get;
+        set;
+    }
 
-    /// <summary>
-    /// The version of the client making the request.
-    /// </summary>
-    public string ClientVersion { get; set; } = clientVersion;
+    public string ApiKey { get; init; } = "";
+    public string VisitorData
+    {
+        get => (string)this["visitorData"];
+        set => this["visitorData"] = value;
+    }
+    public string Hl
+    {
+        get => (string)this["hl"];
+        set => this["hl"] = value;
+    }
 
-    /// <summary>
-    /// The client form factor (e.g., mobile, tablet, desktop).
-    /// </summary>
-    public string ClientFormFactor { get; set; } = "UNKNOWN_FORM_FACTOR";
+    public string Gl
+    {
+        get => (string)this["gl"];
+        set => this["gl"] = value;
+    }
 
-    /// <summary>
-    /// The make of the device on which the client is running.
-    /// </summary>
-    public string DeviceMake { get; set; } = deviceMake;
+    public string Platform
+    {
+        get => (string)this["platform"];
+        set => this["platform"] = value;
+    }
 
-    /// <summary>
-    /// The model of the device on which the client is running.
-    /// </summary>
-    public string DeviceModel { get; set; } = deviceModel;
+    public string ClientName
+    {
+        get => (string)this["clientName"];
+        set => this["clientName"] = value;
+    }
 
-    /// <summary>
-    /// The device experiment ID, if any.
-    /// </summary>
-    public string? DeviceExperimentId { get; set; }
+    public string ClientVersion
+    {
+        get => (string)this["clientVersion"];
+        set => this["clientVersion"] = value;
+    }
 
-    /// <summary>
-    /// The operating system name of the client.
-    /// </summary>
-    public string OsName { get; set; } = osName;
+    public string UserAgent
+    {
+        get => (string)this["userAgent"];
+        set => this["userAgent"] = value;
+    }
 
-    /// <summary>
-    /// The version of the operating system of the client.
-    /// </summary>
-    public string OsVersion { get; set; } = osVersion;
+    public string TimeZone
+    {
+        get => (string)this["timeZone"];
+        set => this["timeZone"] = value;
+    }
 
-    /// <summary>
-    /// The user agent string for the client.
-    /// </summary>
-    public string UserAgent { get; set; } = userAgent;
+    public int UtcOffsetMinutes
+    {
+        get => (int)this["utcOffsetMinutes"];
+        set => this["utcOffsetMinutes"] = value;
+    }
 
-    /// <summary>
-    /// The browser name used by the client.
-    /// </summary>
-    public string? BrowserName { get; set; }
+    // ── Methods ──────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// The version of the browser used by the client.
-    /// </summary>
-    public string? BrowserVersion { get; set; }
-
-    /// <summary>
-    /// The remote host for the client making the request.
-    /// </summary>
-    public string? RemoteHost { get; set; }
-
-    /// <summary>
-    /// The original URL from which the client request was initiated.
-    /// </summary>
-    public string? OriginalUrl { get; set; }
-
-    /// <summary>
-    /// The visitor data associated with the request.
-    /// </summary>
-    public string? VisitorData { get; set; }
-
-    /// <summary>
-    /// The rollout token.
-    /// </summary>
-    public string? RolloutToken { get; set; }
-
-    /// <summary>
-    /// The screen height in points (vertical resolution).
-    /// </summary>
-    public int? ScreenHeightPoints { get; set; } = 1440;
-
-    /// <summary>
-    /// The screen width in points (horizontal resolution).
-    /// </summary>
-    public int? ScreenWidthPoints { get; set; } = 2560;
-
-    /// <summary>
-    /// The screen density as a floating-point value.
-    /// </summary>
-    public float? ScreenDensityFloat { get; set; } = 1;
-
-    /// <summary>
-    /// The screen pixel density (DPI).
-    /// </summary>
-    public int? ScreenPixelDensity { get; set; } = 1;
-
-    /// <summary>
-    /// The user interface theme of the client.
-    /// </summary>
-    public string? UserInterfaceTheme { get; set; } = "USER_INTERFACE_THEME_DARK";
-
-    /// <summary>
-    /// The time zone of the client.
-    /// </summary>
-    public string TimeZone { get; set; } = timeZone;
-
-    /// <summary>
-    /// The UTC offset in minutes for the client's time zone.
-    /// </summary>
-    public int UtcOffsetMinutes { get; set; } = utcOffsetMinutes;
-
-
-    /// <summary>
-    /// Creates a shallow copy of the current <see cref="Client"/> instance.
-    /// </summary>
-    /// <returns>A new <see cref="Client"/> object that is a shallow copy of the current instance.</returns>
-    public Client Clone() =>
-        (Client)MemberwiseClone();
+    public Client Clone()
+    {
+        var copy = new Client();
+        foreach (var kvp in this)
+            copy[kvp.Key] = kvp.Value;
+        copy.Headers = Headers?.ToArray();
+        return copy;
+    }
 }

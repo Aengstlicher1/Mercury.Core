@@ -188,6 +188,18 @@ internal readonly struct JElement
     }
 
     /// <summary>
+    /// Converts this element to an <see cref="double"/> if possible.
+    /// </summary>
+    /// <returns>The <see cref="double"/> value, or <see langword="null"/> if this element is not an <see cref="double"/>.</returns>
+    public double? AsDouble()
+    {
+        if (element.TryGetDouble(out double value))
+            return value;
+
+        return null;
+    }
+
+    /// <summary>
     /// Converts this element to a <see cref="bool"/> if possible.
     /// </summary>
     /// <returns>The bool value, or <see langword="null"/> if this element is not a bool.</returns>

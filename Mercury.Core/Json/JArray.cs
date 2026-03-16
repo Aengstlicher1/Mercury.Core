@@ -17,9 +17,10 @@ internal sealed class JArray : IEnumerable<JElement>
 
 
     readonly JsonElement element;
-#if DEBUG
+
+    #if DEBUG
     readonly string path;
-#endif
+    #endif
 
     /// <summary>
     /// Creates a new instance of the <see cref="JArray"/> class.
@@ -29,26 +30,26 @@ internal sealed class JArray : IEnumerable<JElement>
     /// <exception cref="ArgumentException">Occurs when the provided <paramref name="element"/> is not an array.</exception>
     public JArray(
         JsonElement element
-#if DEBUG
+        #if DEBUG
         , string path = "$"
-#endif
+        #endif
         )
     {
         if (element.ValueKind != JsonValueKind.Array)
             throw new ArgumentException("JsonElement is not an array.", nameof(element));
 
         this.element = element;
-#if DEBUG
+        #if DEBUG
         this.path = path;
-#endif
+        #endif
     }
 
     JArray()
     {
         element = default;
-#if DEBUG
+        #if DEBUG
         path = "$";
-#endif
+        #endif
     }
 
 
@@ -98,6 +99,23 @@ internal sealed class JArray : IEnumerable<JElement>
             yield return new(element[i]);
 #endif
         }
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public static JElement[] Merge(JArray first, JArray second)
+    {
+        var result = new JElement[first.Length + second.Length];
+        int i = 0;
+
+        foreach (var el in first)
+            result[i++] = el;
+
+        foreach (var el in second)
+            result[i++] = el;
+
+        return result;
     }
 
     /// <summary>

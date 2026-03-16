@@ -15,6 +15,11 @@ internal static class Endpoints
     /// </summary>
     const string MusicWebUrl = "https://music.youtube.com";
 
+    /// <summary>
+    /// The base URL for the Youtube API.
+    /// </summary>
+    const string YoutubeApiUrl = "https://www.youtube.com/youtubei/v1";
+
 
     /// <summary>
     /// The path to the account menu API.
@@ -29,7 +34,7 @@ internal static class Endpoints
     /// <summary>
     /// The path to the player API.
     /// </summary>
-    public const string Player = MusicApiUrl + "/player";
+    public const string Player = YoutubeApiUrl + "/player";
 
     /// <summary>
     /// The path to the search suggestions API.

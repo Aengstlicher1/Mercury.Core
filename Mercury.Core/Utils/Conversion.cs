@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Mercury.Core.Json;
 using Mercury.Core.Models;
 using Mercury.Core.Utils.Network;
 
@@ -22,6 +23,9 @@ internal static class Conversion
             ClientType.None => null,
             ClientType.WebMusic => Client.WebMusic.Clone(),
             ClientType.IOSMusic => Client.IOSMusic.Clone(),
+            ClientType.Web => Client.Web.Clone(),
+            ClientType.Android => Client.Android.Clone(),
+            ClientType.AndroidVR => Client.AndroidVR.Clone(),
             _ => throw new ArgumentException($"Invalid client type: {type}.", nameof(type))
         };
 

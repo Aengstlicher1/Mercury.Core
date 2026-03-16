@@ -28,4 +28,27 @@ public enum ClientType
     /// - Provides HLS (m3u8) streaming formats.
     /// </remarks>
     IOSMusic,
+
+    /// <summary>
+    /// Represents the YouTube Music Web client.
+    /// </summary>
+    /// <remarks>
+    /// Notes:<br/>
+    /// - VisitorData for streaming required.
+    /// </remarks>
+    Web,
+
+    /// <summary>
+    /// Represents the YouTube Android client.
+    /// </summary>
+    Android,
+
+    /// <summary>
+    /// Represents the YouTube AndroidVR client.
+    /// </summary>
+    /// <remarks>
+    /// Notes:<br/>
+    /// - VisitorData for streaming required.<br/>
+    /// </remarks>
+    AndroidVR,
 }
