@@ -21,7 +21,7 @@ namespace Mercury.Core.Json.Parsers.Generic
                 "Artist" => Enums.MediaCategory.Artist,
                 "EP" or "Album" or "Single" => Enums.MediaCategory.Album,
                 "Profile" => Enums.MediaCategory.Profile,
-                "Podcast" => Enums.MediaCategory.Podacast,
+                "Podcast" => Enums.MediaCategory.Podcast,
                 "Episode" => Enums.MediaCategory.Episode,
                 _ => Enums.MediaCategory.None
             };

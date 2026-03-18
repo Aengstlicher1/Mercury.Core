@@ -9,5 +9,7 @@ namespace Mercury.Core
         public static PlayerService Player = new PlayerService();
 
         public static LyricsService Lyrics = new LyricsService();
+
+        public static BrowseService Browse = new BrowseService();
     }
 }

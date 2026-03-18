@@ -9,7 +9,7 @@ namespace Mercury.Core.Json.Parsers.Search
     {
         internal static Playlist Parse(JElement renderer)
         {
-            var thumbnails = ThumbnailParser.Parse(renderer);
+            var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
             var flex = FlexColumnParser.GetFlex(renderer);
 

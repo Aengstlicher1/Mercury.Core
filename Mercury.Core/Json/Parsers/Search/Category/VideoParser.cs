@@ -8,7 +8,7 @@ namespace Mercury.Core.Json.Parsers.Search.Category
     {
         internal static Video Parse(JElement renderer)
         {
-            var thumbnails = ThumbnailParser.Parse(renderer);
+            var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
             var flex = FlexColumnParser.GetFlex(renderer);
 

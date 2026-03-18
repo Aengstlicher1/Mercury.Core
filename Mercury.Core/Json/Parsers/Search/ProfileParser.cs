@@ -8,7 +8,7 @@ namespace Mercury.Core.Json.Parsers.Search
     {
         internal static Profile Parse(JElement renderer)
         {
-            var thumbnails = ThumbnailParser.Parse(renderer);
+            var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
             var flex = FlexColumnParser.GetFlex(renderer);
 

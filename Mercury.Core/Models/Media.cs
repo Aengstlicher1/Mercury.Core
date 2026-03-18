@@ -12,16 +12,10 @@ public abstract class Media
     public virtual MediaCategory Type { get; } = MediaCategory.None;
 }
 
-/// <summary>Song search result with duration</summary>
-public class Song : Media
+public abstract class Track : Media
 {
-    public override MediaCategory Type { get; } = MediaCategory.Song;
-
-    public string Album { get; set; } = "";
     public string Duration { get; set; } = "";
-    
-    public string Url => $"https://music.youtube.com/watch?v={Id}";
-    
+
     public TimeSpan DurationTimeSpan
     {
         get
@@ -38,14 +32,25 @@ public class Song : Media
     }
 }
 
+/// <summary>Song search result with duration</summary>
+public class Song : Track
+{
+    public override MediaCategory Type { get; } = MediaCategory.Song;
+
+    public string Album { get; set; } = "";
+
+    public string Url => $"https://music.youtube.com/watch?v={Id}";
+    
+    
+}
+
 /// <summary>Video search result</summary>
-public class Video : Media
+public class Video : Track
 {
     public override MediaCategory Type { get; } = MediaCategory.Video;
 
     public string Views { get; set; } = "";
-    public string Duration { get; set; } = "";
-    
+
     public string Url => $"https://music.youtube.com/watch?v={Id}";
 }
 
@@ -84,19 +89,18 @@ public class Playlist : Media
 /// <summary>Podcast search result</summary>
 public class Podcast : Media
 {
-    public override MediaCategory Type { get; } = MediaCategory.Podacast;
+    public override MediaCategory Type { get; } = MediaCategory.Podcast;
 
     public string Url => $"https://music.youtube.com/podcast/{Id}";
 }
 
 /// <summary>Episode search result</summary>
-public class Episode : Media
+public class Episode : Track
 {
     public override MediaCategory Type { get; } = MediaCategory.Episode;
 
     public string PodcastName { get; set; } = "";
     public string Date { get; set; } = "";
-    public string Duration { get; set; } = "";
     
     public string Url => $"https://music.youtube.com/watch?v={Id}";
 }

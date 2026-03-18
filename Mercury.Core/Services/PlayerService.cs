@@ -4,7 +4,7 @@ using Mercury.Core.Models;
 using Mercury.Core.Utils;
 using Mercury.Core.Network;
 using System.Collections.ObjectModel;
-using System.Data;
+using System.Diagnostics;
 
 namespace Mercury.Core.Services
 {
@@ -39,7 +39,14 @@ namespace Mercury.Core.Services
 
             foreach (var format in allFormats)
             {
-                infos.Add(StreamInfoParser.Parse(format));
+                try
+                {
+                    infos.Add(StreamInfoParser.Parse(format));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"{ex.Message}\n\nData: {ex.Data}", "STREAM");
+                }
             }
 
             var data = StreamingDataParser.Parse(json);

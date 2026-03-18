@@ -191,7 +191,7 @@ public static class Conversion
             MediaCategory.Playlist  => SearchFilter.CommunityPlaylists,
             MediaCategory.Album     => SearchFilter.Albums,
             MediaCategory.Artist    => SearchFilter.Artists,
-            MediaCategory.Podacast  => SearchFilter.Podcasts,
+            MediaCategory.Podcast  => SearchFilter.Podcasts,
             MediaCategory.Episode   => SearchFilter.Episodes,
             _                       => SearchFilter.Songs
         };
@@ -207,7 +207,7 @@ public static class Conversion
             SearchFilter.FeaturedPlaylists      => MediaCategory.Playlist,
             SearchFilter.Albums                 => MediaCategory.Album,
             SearchFilter.Artists                => MediaCategory.Artist,
-            SearchFilter.Podcasts               => MediaCategory.Podacast,
+            SearchFilter.Podcasts               => MediaCategory.Podcast,
             SearchFilter.Episodes               => MediaCategory.Episode,
             _                                   => MediaCategory.None
         };

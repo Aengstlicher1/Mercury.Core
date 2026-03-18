@@ -19,9 +19,7 @@ namespace Mercury.Core.Json.Parsers.Generic
                 .AsArray()
                 .Or(JArray.Empty);
 
-            var text = runs[runIndex]
-                .Get("text")
-                .AsString();
+            var text = RunsParser.Parse(runs, runIndex);
 
             if (text == null) Debug.WriteLine($"Unable to parse FlexColumn: {flex}", "PARSERS");
             return text!;

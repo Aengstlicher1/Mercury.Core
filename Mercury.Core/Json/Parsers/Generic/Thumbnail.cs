@@ -1,21 +1,15 @@
 ﻿using Mercury.Core.Models;
 using Mercury.Core.Utils;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class ThumbnailParser
     {
-        internal static ThumbArray Parse(JElement renderer)
+        internal static ThumbArray Parse(JElement thumbRenderer)
         {
-            var thumbs = renderer
-                .Get("thumbnail")
-                .Get("musicThumbnailRenderer")
+            var thumbs = thumbRenderer
                 .Get("thumbnail")
                 .Get("thumbnails")
                 .AsArray()
@@ -44,6 +38,13 @@ namespace Mercury.Core.Json.Parsers.Generic
             }
             else
                 return ThumbArray.Empty;
+        }
+
+        public static JElement GetThumbRenderer(JElement renderer)
+        {
+            return renderer
+                .Get("thumbnail")
+                .Get("musicThumbnailRenderer");
         }
     }
 }

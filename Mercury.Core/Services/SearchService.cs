@@ -73,7 +73,7 @@ namespace Mercury.Core.Services
                             Enums.MediaCategory.Playlist    => PlaylistParser.Parse(renderer),
                             Enums.MediaCategory.Episode     => EpisodeParser.Parse(renderer),
                             Enums.MediaCategory.Profile     => ProfileParser.Parse(renderer),
-                            Enums.MediaCategory.Podacast    => PodcastParser.Parse(renderer),
+                            Enums.MediaCategory.Podcast    => PodcastParser.Parse(renderer),
                             _ => null!
                         }
                     );

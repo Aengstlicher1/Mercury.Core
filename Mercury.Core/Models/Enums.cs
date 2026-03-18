@@ -17,7 +17,7 @@ namespace Mercury.Core.Models
             Album,
             Artist,
             Profile,
-            Podacast,
+            Podcast,
             Episode
         }
 

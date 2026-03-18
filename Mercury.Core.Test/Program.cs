@@ -1,4 +1,5 @@
 ﻿using Mercury.Core.Models;
+using static Mercury.Core.Models.Enums;
 
 
 namespace Mercury.Core.Test
@@ -7,14 +8,11 @@ namespace Mercury.Core.Test
     {
         public static async Task Main()
         {
-            var medias = await YoutubeMusic.Search.SearchAsync("Runaway");
+            var medias = await YoutubeMusic.Search.SearchCategoryAsync("Runaway", SearchFilter.Episodes);
 
-            var streamingData = await YoutubeMusic.Player.GetStreamAsync(medias!.First().Id);
+            var media = medias!.First();
 
-            foreach (var stream in streamingData.Streams)
-            {
-                Console.WriteLine(stream.Url);
-            }
+            var test = await YoutubeMusic.Browse.GetAsync(media.Id, media.Type);
         }
     }
 }
