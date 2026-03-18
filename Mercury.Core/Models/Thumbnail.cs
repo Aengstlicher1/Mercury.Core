@@ -14,7 +14,7 @@ namespace Mercury.Core.Models
             Thumbs = thumbnails;
         }
 
-        public Thumbnail[] Thumbs { get; set; }
+        private Thumbnail[] Thumbs { get; set; }
 
         public Thumbnail HighestRes => Thumbs.MaxBy(t => t.Size.Height);
         public Thumbnail LowestRes => Thumbs.MinBy(t => t.Size.Height);

@@ -8,7 +8,7 @@ namespace Mercury.Core.Test
     {
         public static async Task Main()
         {
-            var medias = await YoutubeMusic.Search.SearchCategoryAsync("Runaway", SearchFilter.Episodes);
+            var medias = await YoutubeMusic.Search.SearchCategoryAsync("Runaway", SearchFilter.Profiles);
 
             var media = medias!.First();
 

@@ -7,27 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mercury.Core.Json.Parsers.Next
+namespace Mercury.Core.Json.Parsers.Browse
 {
-    internal static class EpisodeParser
+    internal static class SongParser
     {
-        public static Episode Parse(JElement renderer)
+        public static Song Parse(JElement renderer)
         {
             var thumbnails = ThumbnailParser.Parse(renderer);
 
-            return new Episode()
+            return new Song()
             {
                 Id = renderer.Get("videoId").AsString().Or(string.Empty),
                 Title = renderer.Get("title").Get("runs").GetAt(0).Get("text").AsString().Or(string.Empty),
-                PodcastName = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText"))),
+                Artists = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText"))),
+                Album = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText")), 2),
                 Duration = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("lengthText"))),
-                Thumbnails = thumbnails
+                Thumbnails = thumbnails,
             };
-        }
-
-        public static string GetBrowseId(JElement renderer)
-        {
-            
         }
     }
 }

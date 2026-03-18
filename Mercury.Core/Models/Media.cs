@@ -5,8 +5,8 @@ namespace Mercury.Core.Models;
 /// <summary>Base class for all search results</summary>
 public abstract class Media
 {
+    public virtual string Id { get; set; } = "";
     public ThumbArray Thumbnails { get; set; } = ThumbArray.Empty;
-    public virtual string Id { get; init; } = "";
     public virtual string Title { get; init; } = "";
     public virtual string Artists { get; init; } = "";
     public virtual MediaCategory Type { get; } = MediaCategory.None;
@@ -14,7 +14,7 @@ public abstract class Media
 
 public abstract class Track : Media
 {
-    public string Duration { get; set; } = "";
+    public virtual string Duration { get; set; } = "";
 
     public TimeSpan DurationTimeSpan
     {

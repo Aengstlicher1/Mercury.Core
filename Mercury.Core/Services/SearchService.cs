@@ -59,8 +59,7 @@ namespace Mercury.Core.Services
                     cToken.ThrowIfCancellationRequested();
 
                     var renderer = result.Get("musicResponsiveListItemRenderer");
-                    var flex = FlexColumnParser.GetFlex(renderer);
-                    var category = CategoryParser.Parse(flex);
+                    var category = CategoryParser.Parse(renderer);
 
                     results.Add
                     (
@@ -128,8 +127,7 @@ namespace Mercury.Core.Services
                     cToken.ThrowIfCancellationRequested();
 
                     var renderer = result.Get("musicResponsiveListItemRenderer");
-                    var flex = FlexColumnParser.GetFlex(renderer);
-                    var category = CategoryParser.Parse(flex);
+                    var category = CategoryParser.Parse(renderer);
 
                     results.Add
                     (
