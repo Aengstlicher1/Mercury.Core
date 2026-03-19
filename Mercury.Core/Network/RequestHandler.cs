@@ -7,12 +7,10 @@ namespace Mercury.Core.Network
 {
     internal static class RequestHandler
     {
-        public readonly static HttpClient httpClient = new HttpClient();
-
-        const string DefaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36";
-
         internal static string VisitorData { get; set; } = "";
 
+        public readonly static HttpClient httpClient = new HttpClient();
+        public static int RequestRetryAmount { get; set; } = 5;
         public static string geoLocation { get; set; } = "US";
 
         readonly static JsonSerializerOptions jsonOptions = new()
@@ -21,12 +19,8 @@ namespace Mercury.Core.Network
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        static RequestHandler()
-        {
-            VisitorData = FetchVisitorDataAsync().GetAwaiter().GetResult();
-        }
-
-        public static async Task<string> SendAsync(
+        public static async Task<string> SendAsync
+        (
             string url,
             HttpMethod method,
             Dictionary<string, object?>? payload = null,
@@ -35,18 +29,44 @@ namespace Mercury.Core.Network
         )
         {
             var client = clientType.ToClient();
-            if ( client == null ) throw new ArgumentNullException( "ClientType" );
+            if (client == null) throw new ArgumentNullException("ClientType");
 
-            Uri requestUri= new Uri(url + client.ApiKey);
-
-            // Preperation
-            HttpRequestMessage request = new(method, requestUri);
             Dictionary<string, object?> body = payload ?? [];
 
-            // Client prep
+            HttpResponseMessage response = await BuildAndSendAsync(url, client, body, cToken);
+            string content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
+
+            // Retry on bot detection
+            for (int i = 0; i < RequestRetryAmount && IsBotResponse(response, content); i++)
+            {
+                VisitorData = await FetchVisitorDataAsync();
+                response = await BuildAndSendAsync(url, client, body, cToken);
+                content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
+            }
+
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException("HTTP request failed.", new(content), response.StatusCode);
+
+            return content;
+        }
+
+        private static async Task<HttpResponseMessage> BuildAndSendAsync(
+            string url,
+            Client client,
+            Dictionary<string, object?> body,
+            CancellationToken cToken
+        )
+        {
+            if (string.IsNullOrWhiteSpace(VisitorData))
+                VisitorData = await FetchVisitorDataAsync(cToken);
+
+            Uri requestUri = new(url + client.ApiKey);
+            HttpRequestMessage request = new(HttpMethod.Post, requestUri);
+
             client.Gl = geoLocation;
             client.VisitorData = VisitorData;
             body["context"] = new Dictionary<string, object> { ["client"] = client };
+
             request.Headers.Add("User-Agent", client.UserAgent);
 
             if (client.Headers != null)
@@ -59,21 +79,16 @@ namespace Mercury.Core.Network
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
             }
 
-            #if DEBUG
-            var test = await request.Content.ReadAsStringAsync();
-            #endif
-
-            // Send
-            HttpResponseMessage response = httpClient.SendAsync(request, cToken).ConfigureAwait(false).GetAwaiter().GetResult();
-
-            string content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
-
-            // Secure
-            if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"HTTP request failed.", new(content), response.StatusCode);
-
-            return content;
+            return await httpClient.SendAsync(request, cToken).ConfigureAwait(false);
         }
+
+        private static bool IsBotResponse(HttpResponseMessage response, string content)
+        {
+            return response.StatusCode == System.Net.HttpStatusCode.Forbidden
+                || content.Contains("You need to log in", StringComparison.OrdinalIgnoreCase)
+                || content.Contains("confirm you're not a bot", StringComparison.OrdinalIgnoreCase);
+        }
+
 
         public static async Task<string> GetAsync(
             string url,

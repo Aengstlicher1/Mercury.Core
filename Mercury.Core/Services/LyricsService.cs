@@ -9,14 +9,14 @@ namespace Mercury.Core.Services
     {
         private const string BaseUrl = "https://lrclib.net/api";
 
-        public async Task<LyricsResult?> GetLyricsAsync(Song song)
+        public async Task<LyricsResult?> GetLyricsAsync(Track track)
         {
             try
             {
-                var url = $"{BaseUrl}/get?artist_name={Uri.EscapeDataString(song.Artists)}&track_name={Uri.EscapeDataString(song.Title)}";
+                var url = $"{BaseUrl}/get?artist_name={Uri.EscapeDataString(track.Artists)}&track_name={Uri.EscapeDataString(track.Title)}";
 
-                if (song.DurationTimeSpan.TotalSeconds > 0)
-                    url += $"&duration={Convert.ToInt32(song.DurationTimeSpan.TotalSeconds)}";
+                if (track.DurationTimeSpan.TotalSeconds > 0)
+                    url += $"&duration={Convert.ToInt32(track.DurationTimeSpan.TotalSeconds)}";
 
                 var response = await RequestHandler.httpClient.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
