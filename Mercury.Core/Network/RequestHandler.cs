@@ -58,7 +58,7 @@ namespace Mercury.Core.Network
         )
         {
             if (string.IsNullOrWhiteSpace(VisitorData))
-                VisitorData = await FetchVisitorDataAsync(cToken);
+                VisitorData = await FetchVisitorDataAsync();
 
             Uri requestUri = new(url + client.ApiKey);
             HttpRequestMessage request = new(HttpMethod.Post, requestUri);
@@ -79,7 +79,9 @@ namespace Mercury.Core.Network
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
             }
 
-            return await httpClient.SendAsync(request, cToken).ConfigureAwait(false);
+            cToken.ThrowIfCancellationRequested();
+
+            return await httpClient.SendAsync(request).ConfigureAwait(false);
         }
 
         private static bool IsBotResponse(HttpResponseMessage response, string content)

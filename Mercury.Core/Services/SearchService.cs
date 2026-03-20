@@ -6,6 +6,7 @@ using Mercury.Core.Models;
 using Mercury.Core.Utils;
 using Mercury.Core.Network;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 
 namespace Mercury.Core.Services
@@ -101,25 +102,25 @@ namespace Mercury.Core.Services
                     { "params", filter.ToParam() }
                 }; 
 
+                var startTime = DateTime.Now;
                 var response = await RequestHandler.PostAsync(Endpoints.Search, payload, ClientType.WebMusic, cToken);
-
-                cToken.ThrowIfCancellationRequested();
+                Debug.WriteLine($"Core: \"Sending Search Request\" took { DateTime.Now - startTime}");
 
                 using IDisposable _ = response.ParseJson(out var json);
 
                 var shelfResults = json
-                        .Get("contents")
-                        .Get("tabbedSearchResultsRenderer")
-                        .Get("tabs").GetAt(0)
-                        .Get("tabRenderer")
-                        .Get("content")
-                        .Get("sectionListRenderer")
-                        .Get("contents")
-                        .GetAt(1)
-                        .Get("musicShelfRenderer")
-                        .Get("contents")
-                        .AsArray()
-                        .Or(JArray.Empty);
+                    .Get("contents")
+                    .Get("tabbedSearchResultsRenderer")
+                    .Get("tabs").GetAt(0)
+                    .Get("tabRenderer")
+                    .Get("content")
+                    .Get("sectionListRenderer")
+                    .Get("contents")
+                    .GetAt(1)
+                    .Get("musicShelfRenderer")
+                    .Get("contents")
+                    .AsArray()
+                    .Or(JArray.Empty);
 
                 Collection<Media> results = new Collection<Media>();
                 foreach (var result in shelfResults)
