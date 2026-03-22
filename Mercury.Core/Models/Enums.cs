@@ -23,6 +23,7 @@ namespace Mercury.Core.Models
 
         public enum SearchFilter
         {
+            All,
             Songs,
             Videos,
             Albums,

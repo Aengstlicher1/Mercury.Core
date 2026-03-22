@@ -34,6 +34,7 @@ namespace Mercury.Core.Json.Parsers.Generic
                 "Video" => MediaCategory.Video,
                 "Playlist" => MediaCategory.Playlist,
                 "Artist" => MediaCategory.Artist,
+                "Episode" => MediaCategory.Episode,
                 "EP" or "Album" or "Single" => MediaCategory.Album,
                 "Profile" => MediaCategory.Profile,
                 "Podcast" => MediaCategory.Podcast,

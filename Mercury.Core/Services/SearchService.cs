@@ -91,6 +91,9 @@ namespace Mercury.Core.Services
             bool ignoreSpelling = true,
             CancellationToken cToken = default)
         {
+            if (filter is Enums.SearchFilter.All)
+                return await SearchAsync(query, cToken:cToken);
+
             try 
             {
                 if (string.IsNullOrEmpty(query))

@@ -1,6 +1,7 @@
 ﻿using Mercury.Core.Models;
 using Mercury.Core.Utils;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 
 namespace Mercury.Core.Json.Parsers.Generic
@@ -33,6 +34,9 @@ namespace Mercury.Core.Json.Parsers.Generic
                         }
                     );
                 }
+
+                if (thumbnails.First().TryGetCustomSize(new Dimensions(1080), out Thumbnail highRes))
+                    thumbnails.Add(highRes);
 
                 return new ThumbArray(thumbnails.ToArray());
             }

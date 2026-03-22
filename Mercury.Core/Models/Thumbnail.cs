@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Mercury.Core.Json.Parsers.Generic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Mercury.Core.Models
@@ -45,6 +47,31 @@ namespace Mercury.Core.Models
         {
             return $"{Size} - {Url.Substring(0, 24)}...";
         }
+
+        public bool TryGetCustomSize(Dimensions size, out Thumbnail thumbnail)
+        {
+            thumbnail = new Thumbnail();
+
+            var isAdjustable = isAdjustableUrl(Url);
+            if (isAdjustable)
+            {
+                var customResUrl = Regex.Replace(Url, @"=w\d+-h\d+-l\d+", $"=w{size.Width}-h{size.Height}-l90");
+                thumbnail = new Thumbnail()
+                {
+                    Url = customResUrl,
+                    Size = size
+                };
+            }
+            return isAdjustable;
+        }
+
+        private static bool isAdjustableUrl(string url)
+        {
+            var regex = new Regex(@"=w\d+-h\d+-l\d+");
+            var match = regex.Match(url);
+
+            return match.Success;
+        }
     }
 
     public struct Dimensions
@@ -53,6 +80,11 @@ namespace Mercury.Core.Models
         {
             Height = height;
             Width = width;
+        }
+        public Dimensions (int size)
+        {
+            Height = size;
+            Width = size;
         }
 
         public int Width { get; set; } = 0;
