@@ -1,5 +1,6 @@
 ﻿using Mercury.Core.Json;
 using Mercury.Core.Json.Parsers.Browse;
+using Mercury.Core.Json.Parsers.Browse.Info;
 using Mercury.Core.Models;
 using Mercury.Core.Network;
 using Mercury.Core.Utils;
@@ -9,6 +10,8 @@ namespace Mercury.Core.Services
 {
     public sealed class BrowseService
     {
+        //\\ Browse Endpoint for normal Model //\\
+
         public async Task<Media> GetAsync(string id, MediaCategory category, CancellationToken cToken = default)
         {
             return category switch
@@ -21,7 +24,6 @@ namespace Mercury.Core.Services
                 MediaCategory.Album or 
                 MediaCategory.Playlist or
                 MediaCategory.Podcast       => await HandleBrowse(id, category, cToken),
-                
                 _                           => null!
             };
         }
@@ -107,7 +109,7 @@ namespace Mercury.Core.Services
             return result;
         }
 
-        private async Task<Media> HandleProfiles(string browseId, CancellationToken cToken = default)
+        private async Task<Profile> HandleProfiles(string browseId, CancellationToken cToken = default)
         {
             if (string.IsNullOrWhiteSpace(browseId))
                 throw new ArgumentNullException("browseId");
@@ -130,7 +132,7 @@ namespace Mercury.Core.Services
             return ProfileParser.Parse(renderer, browseId);
         }
 
-        private async Task<Media> HandleArtists(string browseId, CancellationToken cToken = default)
+        private async Task<Artist> HandleArtists(string browseId, CancellationToken cToken = default)
         {
             if (string.IsNullOrWhiteSpace(browseId))
                 throw new ArgumentNullException("browseId");
@@ -153,7 +155,7 @@ namespace Mercury.Core.Services
             return ArtistParser.Parse(renderer, browseId);
         }
 
-        private async Task<Media> HandleEpisode(string id, CancellationToken cToken = default)
+        private async Task<Episode> HandleEpisode(string id, CancellationToken cToken = default)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentNullException("id");
@@ -204,6 +206,49 @@ namespace Mercury.Core.Services
                 .Get("musicResponsiveHeaderRenderer");
 
             return EpisodeParser.Parse(nextRenderer, browseRenderer);
+        }
+
+
+
+        //\\ Browse Endpoint for Info-Model //\\
+        public async Task<MediaInfo> GetInfoAsync(string id, MediaCategory category, CancellationToken cToken = default)
+        {
+            return category switch
+            {
+                MediaCategory.Playlist  => await HandlePlalistInfo(id, cToken),
+                _                       => null!
+            };
+        }
+
+        private async Task<PlaylistInfo> HandlePlalistInfo(string id, CancellationToken cToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException("id");
+
+            Dictionary<string, object?> payload = new()
+            {
+                {"browseId" , id }
+            };
+
+            var response = await RequestHandler.GetAsync(Endpoints.Browse, payload, ClientType.WebMusic, cToken);
+
+            IDisposable _ = response.ParseJson(out var json);
+
+            var renderer = json
+                .Get("contents")
+                .Get("twoColumnBrowseResultsRenderer")
+                .Get("secondaryContents")
+                .Get("sectionListRenderer")
+                .Get("contents")
+                .GetAt(0)
+                .Get("musicPlaylistShelfRenderer");
+
+            var tracks = renderer
+                .Get("contents")
+                .AsArray()
+                .Or(JArray.Empty);
+
+            return PlaylistInfoParser.Parse(renderer, tracks);
         }
     }
 }

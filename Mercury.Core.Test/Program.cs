@@ -8,11 +8,11 @@ namespace Mercury.Core.Test
     {
         public static async Task Main()
         {
-            var medias = await YoutubeMusic.Search.SearchCategoryAsync("Runaway", SearchFilter.Profiles);
+            var medias = await YoutubeMusic.Search.SearchCategoryAsync("test", SearchFilter.CommunityPlaylists);
 
             var media = medias!.First();
 
-            var test = await YoutubeMusic.Browse.GetAsync(media.Id, media.Type);
+            var test = await YoutubeMusic.Browse.GetInfoAsync("PL2EWRRvBchexFAg4Ow4e7oQDrbqxxdhqY", MediaCategory.Playlist);
         }
     }
 }

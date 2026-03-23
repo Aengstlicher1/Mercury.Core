@@ -44,6 +44,10 @@ namespace Mercury.Core.Network
                 content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
             }
 
+            # if DEBUG
+            var test = await response.Content.ReadAsStringAsync();
+            # endif
+
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException("HTTP request failed.", new(content), response.StatusCode);
 
