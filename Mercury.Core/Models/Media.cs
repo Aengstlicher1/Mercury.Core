@@ -20,7 +20,9 @@ public abstract class Track : Media
     {
         get
         {
-            if (string.IsNullOrEmpty(Duration)) return TimeSpan.Zero;
+            if (string.IsNullOrEmpty(Duration)) 
+                return TimeSpan.Zero;
+
             var parts = Duration.Split(':');
             return parts.Length switch
             {
