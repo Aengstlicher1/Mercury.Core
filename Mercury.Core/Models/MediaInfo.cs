@@ -8,7 +8,7 @@ namespace Mercury.Core.Models
 {
     public abstract class MediaInfo
     {
-
+        
     }
 
     public class PlaylistInfo : MediaInfo
