@@ -5,6 +5,9 @@ namespace Mercury.Core.Models;
 /// <summary>Base class for all search results</summary>
 public abstract class Media
 {
+    /// <summary>
+    /// Browse ID of the Media
+    /// </summary>
     public virtual string Id { get; set; } = "";
     public ThumbArray Thumbnails { get; set; } = ThumbArray.Empty;
     public virtual string Title { get; init; } = "";
@@ -14,6 +17,10 @@ public abstract class Media
 
 public abstract class Track : Media
 {
+    /// <summary>
+    /// Video ID of the Media
+    /// </summary>
+    public override string Id { get; set; } = "";
     public virtual string Duration { get; set; } = "";
 
     public TimeSpan DurationTimeSpan
@@ -53,6 +60,20 @@ public class Video : Track
 
     public string Views { get; set; } = "";
 
+    public string Url => $"https://music.youtube.com/watch?v={Id}";
+}
+
+/// <summary>Episode search result</summary>
+public class Episode : Track
+{
+    public string BrowseId { get; internal set; } = "";
+    
+    public override MediaCategory Type { get; } = MediaCategory.Episode;
+
+    public string PodcastName { get; set; } = "";
+    
+    public string Date { get; set; } = "";
+    
     public string Url => $"https://music.youtube.com/watch?v={Id}";
 }
 
@@ -96,17 +117,7 @@ public class Podcast : Media
     public string Url => $"https://music.youtube.com/podcast/{Id}";
 }
 
-/// <summary>Episode search result</summary>
-public class Episode : Track
-{
-    public override MediaCategory Type { get; } = MediaCategory.Episode;
-
-    public string PodcastName { get; set; } = "";
-    public string Date { get; set; } = "";
-    
-    public string Url => $"https://music.youtube.com/watch?v={Id}";
-}
-
+/// <summary>Profile search result</summary>
 public class Profile : Media
 {
     public override MediaCategory Type { get; } = MediaCategory.Profile;

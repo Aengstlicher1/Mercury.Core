@@ -45,7 +45,7 @@ namespace Mercury.Core.Services
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"{ex.Message}\n\nData: {ex.Data}", "STREAM");
+                    Debug.WriteLine($"{ex.Message}", "STREAM");
                 }
             }
 
