@@ -1,7 +1,10 @@
-﻿using Mercury.Core.Json;
+﻿using System.Collections.ObjectModel;
+using Mercury.Core.Json;
 using Mercury.Core.Json.Parsers.Browse;
+using Mercury.Core.Json.Parsers.Browse.Explore;
 using Mercury.Core.Json.Parsers.Browse.Info;
 using Mercury.Core.Models;
+using Mercury.Core.Models.Explore;
 using Mercury.Core.Network;
 using Mercury.Core.Utils;
 using static Mercury.Core.Models.Enums;
@@ -10,6 +13,61 @@ namespace Mercury.Core.Services
 {
     public sealed class BrowseService
     {
+        //\\ Browse Endpoint for the explore page //\\
+        
+        public async Task<ExploreFeed> GetExploreFeedAsync(CancellationToken cToken = default)
+        {
+            Dictionary<string, object?> payload = new()
+            {
+                {"browseId" , "FEmusic_explore" }
+            };
+            
+            var response = await RequestHandler.PostAsync(Endpoints.Browse, payload, ClientType.WebMusic, cToken);
+
+            cToken.ThrowIfCancellationRequested();
+            
+            using IDisposable _ = response.ParseJson(out var json);
+
+            var contents = json
+                .Get("contents")
+                .Get("singleColumnBrowseResultsRenderer")
+                .Get("tabs")
+                .GetAt(0)
+                .Get("tabRenderer")
+                .Get("content")
+                .Get("sectionListRenderer")
+                .Get("contents");
+                
+            
+            return new ExploreFeed()
+            {
+                Genres = await HandleGenres(contents.GetAt(2).Get("musicCarouselShelfRenderer"), cToken),
+            };
+        }
+
+        private async Task<GenresCategory> HandleGenres(JElement renderer, CancellationToken cToken = default)
+        {
+            Collection<Genre> genres = new();
+            foreach (var jGenre in renderer.Get("contents").AsArray())
+            {
+                genres.Add(GenreParser.Parse(jGenre));
+            }
+            
+            return new GenresCategory()
+            {
+                Name = renderer
+                    .Get("header")
+                    .Get("musicCarouselShelfBasicHeaderRenderer")
+                    .Get("title")
+                    .Get("runs")
+                    .GetAt(0)
+                    .Get("text")
+                    .AsString()
+                    .Or(string.Empty),
+                Genres = genres.ToArray()
+            };
+        }
+        
         //\\ Browse Endpoint for normal Model //\\
 
         public async Task<Media> GetAsync(string id, MediaCategory category, CancellationToken cToken = default)
