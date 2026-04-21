@@ -92,7 +92,7 @@ namespace Mercury.Core.Services
             return new GenresCategory()
             {
                 Name = TitleParser.Parse(renderer),
-                Genres = genres.ToArray()
+                Content = genres.ToArray()
             };
         }
         

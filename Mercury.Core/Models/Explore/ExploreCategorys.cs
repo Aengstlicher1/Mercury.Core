@@ -11,7 +11,7 @@ public class ReleasesCategory
 public class GenresCategory
 {
     public string Name { get; init; }
-    public Genre[] Genres { get; init; }
+    public Genre[] Content { get; init; }
 }
 
 public class TrendingCategory
