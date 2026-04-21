@@ -2,7 +2,7 @@
 
 public class ExploreFeed
 {
-    public NewReleasesCategory Releases { get; init; }
+    public ReleasesCategory Releases { get; init; }
     
     public GenresCategory Genres { get; init; }
     

@@ -12,8 +12,13 @@ namespace Mercury.Core.Json.Parsers.Browse.Info
 {
     internal static class PlaylistInfoParser
     {
-        public static PlaylistInfo Parse(JElement renderer, JArray tracks)
+        public static PlaylistInfo Parse(JElement renderer, Playlist original)
         {
+            var tracks = renderer
+                .Get("contents")
+                .AsArray()
+                .Or(JArray.Empty);
+            
             Collection<PlaylistTrack> playlistTracks = new();
             foreach (var track in tracks)
             {
@@ -22,34 +27,25 @@ namespace Mercury.Core.Json.Parsers.Browse.Info
                 );
             }
 
-            return new PlaylistInfo()
+            return new PlaylistInfo(original)
             {
                 Tracks = playlistTracks.ToArray()
             };
         }
 
-        private static PlaylistTrack ParsePlaylistTrack(JElement renderer)
-        {
-            var category = renderer
-                .Get("thumbnail")
-                .Get("musicThumbnailRenderer")
-                .Get("thumbnail")
-                .Get("thumbnails");
-
-            return null;
-        }
-
-        private static SongPlaylistTrack ParseSongPlaylistTrack(JElement renderer)
+        public static PlaylistTrack ParsePlaylistTrack(JElement renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
             var flex = FlexColumnParser.GetFlex(renderer);
+            var fix = FixedColumnParser.GetFix(renderer);
 
-            return new SongPlaylistTrack()
+            return new PlaylistTrack()
             {
                 Id = renderer.Get("playlistItemData").Get("videoId").AsString().Or(string.Empty),
                 Title = FlexColumnParser.Parse(flex, 0),
-                Duration = FixedColumnParser.Parse(FixedColumnParser.GetFix(renderer), 0),
+                Artist = FlexColumnParser.Parse(flex, 1),
+                Duration = FixedColumnParser.Parse(fix, 0),
                 Thumbnails = thumbnails
             };
         }

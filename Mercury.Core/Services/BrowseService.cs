@@ -8,6 +8,7 @@ using Mercury.Core.Models.Explore;
 using Mercury.Core.Network;
 using Mercury.Core.Utils;
 using static Mercury.Core.Models.Enums;
+using AlbumParser = Mercury.Core.Json.Parsers.Browse.AlbumParser;
 
 namespace Mercury.Core.Services
 {
@@ -37,25 +38,47 @@ namespace Mercury.Core.Services
                 .Get("content")
                 .Get("sectionListRenderer")
                 .Get("contents");
-                
             
             return new ExploreFeed()
             {
+                Releases = HandleReleases(contents.GetAt(1).Get("musicCarouselShelfRenderer"), cToken),
                 Genres = HandleGenres(contents.GetAt(2).Get("musicCarouselShelfRenderer"), cToken),
                 Trending = HandleTrending(contents.GetAt(3).Get("musicCarouselShelfRenderer"), cToken),
+                NewMusicVideos = HandleNewMusicVideos(contents.GetAt(4).Get("musicCarouselShelfRenderer"), cToken)
             };
         }
 
-        private TrendingCategory HandleTrending(JElement renderer, CancellationToken cToken = default)
+        private NewMusicVideosCategory HandleNewMusicVideos(JElement renderer, CancellationToken cToken = default)
         {
-            Collection<Track> tracks;
-
-            foreach (var track in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            Collection<Video> videos = new();
+            foreach (var video in renderer.Get("contents").AsArray().Or(JArray.Empty))
             {
-                SongParser.Parse(track);
+                var vid = MusicVideoParser.Parse(video.Get("musicTwoRowItemRenderer"));
+                if (vid != null)
+                    videos.Add(vid);
+            }
+
+            return new NewMusicVideosCategory()
+            {
+                Name = TitleParser.Parse(renderer),
+                Content = videos.ToArray()
+            };
+        }
+        
+        private ReleasesCategory HandleReleases(JElement renderer, CancellationToken cToken = default)
+        {
+            Collection<Album> albums = new();
+            foreach (var media in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            {
+                var mRenderer = media.Get("musicTwoRowItemRenderer");
+                albums.Add(Mercury.Core.Json.Parsers.Browse.Explore.AlbumParser.Parse(mRenderer));
             }
             
-            return null;
+            return new ReleasesCategory()
+            {
+                Name = TitleParser.Parse(renderer),
+                Content = albums.ToArray()
+            };
         }
         
         private GenresCategory HandleGenres(JElement renderer, CancellationToken cToken = default)
@@ -68,16 +91,24 @@ namespace Mercury.Core.Services
             
             return new GenresCategory()
             {
-                Name = renderer
-                    .Get("header")
-                    .Get("musicCarouselShelfBasicHeaderRenderer")
-                    .Get("title")
-                    .Get("runs")
-                    .GetAt(0)
-                    .Get("text")
-                    .AsString()
-                    .Or(string.Empty),
+                Name = TitleParser.Parse(renderer),
                 Genres = genres.ToArray()
+            };
+        }
+        
+        private TrendingCategory HandleTrending(JElement renderer, CancellationToken cToken = default)
+        {
+            Collection<Track> tracks = new();
+
+            foreach (var track in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            {
+                tracks.Add(PlaylistInfoParser.ParsePlaylistTrack(track.Get("musicResponsiveListItemRenderer")));
+            }
+            
+            return new TrendingCategory()
+            {
+                Name = TitleParser.Parse(renderer),
+                Content = tracks.ToArray()
             };
         }
         
@@ -282,23 +313,23 @@ namespace Mercury.Core.Services
 
 
         //\\ Browse Endpoint for Info-Model //\\
-        public async Task<MediaInfo> GetInfoAsync(string id, MediaCategory category, CancellationToken cToken = default)
+        public async Task<MediaInfo> GetInfoAsync(Media media, CancellationToken cToken = default)
         {
-            return category switch
+            return media.Type switch
             {
-                MediaCategory.Playlist  => await HandlePlalistInfo(id, cToken),
+                MediaCategory.Playlist  => await HandlePlalistInfo((media as Playlist)!, cToken),
                 _                       => null!
             };
         }
 
-        private async Task<PlaylistInfo> HandlePlalistInfo(string id, CancellationToken cToken = default)
+        private async Task<PlaylistInfo> HandlePlalistInfo(Playlist playlist, CancellationToken cToken = default)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException("id");
+            if (string.IsNullOrWhiteSpace(playlist.Id))
+                throw new ArgumentNullException(nameof(playlist));
 
             Dictionary<string, object?> payload = new()
             {
-                {"browseId" , id }
+                {"browseId" , playlist.Id }
             };
 
             var response = await RequestHandler.GetAsync(Endpoints.Browse, payload, ClientType.WebMusic, cToken);
@@ -314,12 +345,7 @@ namespace Mercury.Core.Services
                 .GetAt(0)
                 .Get("musicPlaylistShelfRenderer");
 
-            var tracks = renderer
-                .Get("contents")
-                .AsArray()
-                .Or(JArray.Empty);
-
-            return PlaylistInfoParser.Parse(renderer, tracks);
+            return PlaylistInfoParser.Parse(renderer, playlist);
         }
     }
 }

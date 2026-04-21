@@ -13,7 +13,7 @@ namespace Mercury.Core.Services
         {
             try
             {
-                var url = $"{BaseUrl}/get?artist_name={Uri.EscapeDataString(track.Artists)}&track_name={Uri.EscapeDataString(track.Title)}";
+                var url = $"{BaseUrl}/get?artist_name={Uri.EscapeDataString(track.Artist)}&track_name={Uri.EscapeDataString(track.Title)}";
 
                 if (track.DurationTimeSpan.TotalSeconds > 0)
                     url += $"&duration={Convert.ToInt32(track.DurationTimeSpan.TotalSeconds)}";

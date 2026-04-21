@@ -19,7 +19,7 @@ namespace Mercury.Core.Json.Parsers.Browse
                 Id = browseId,
                 Title = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("title"))),
                 Year = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("subtitle")), 2),
-                Artists = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("straplineTextOne"))),
+                Artist = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("straplineTextOne"))),
                 Thumbnails = thumbnails
             };
         }

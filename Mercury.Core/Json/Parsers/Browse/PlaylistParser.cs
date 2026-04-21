@@ -23,7 +23,7 @@ namespace Mercury.Core.Json.Parsers.Browse
                 Title = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("title"))),
                 Views = (runsLength > 2) ? string.Empty : RunsParser.Parse(RunsParser.GetRuns(renderer.Get("secondSubtitle"))),
                 ItemCount = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("secondSubtitle")), (runsLength > 2) ? 0 : 2),
-                Artists = renderer.Get("facepile").Get("avatarStackViewModel").Get("text").Get("content").AsString().Or(string.Empty),
+                Artist = renderer.Get("facepile").Get("avatarStackViewModel").Get("text").Get("content").AsString().Or(string.Empty),
                 Thumbnails = thumbnails
             };
         }

@@ -19,7 +19,7 @@ namespace Mercury.Core.Json.Parsers.Browse
             {
                 Id = renderer.Get("videoId").AsString().Or(string.Empty),
                 Title = renderer.Get("title").Get("runs").GetAt(0).Get("text").AsString().Or(string.Empty),
-                Artists = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText"))),
+                Artist = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText"))),
                 Album = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText")), 2),
                 Duration = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("lengthText"))),
                 Thumbnails = thumbnails,

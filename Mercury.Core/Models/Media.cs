@@ -11,7 +11,7 @@ public abstract class Media
     public virtual string Id { get; set; } = "";
     public ThumbArray Thumbnails { get; set; } = ThumbArray.Empty;
     public virtual string Title { get; init; } = "";
-    public virtual string Artists { get; init; } = "";
+    public virtual string Artist { get; init; } = "";
     public virtual MediaCategory Type { get; } = MediaCategory.None;
 }
 

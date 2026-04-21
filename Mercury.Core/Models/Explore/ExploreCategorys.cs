@@ -2,10 +2,10 @@
 
 namespace Mercury.Core.Models.Explore;
 
-public class NewReleasesCategory
+public class ReleasesCategory
 {
     public string Name { get; init; }
-    public Media[] Content { get; init; }
+    public Album[] Content { get; init; }
 }
 
 public class GenresCategory

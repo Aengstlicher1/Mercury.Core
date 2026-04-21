@@ -16,7 +16,7 @@ namespace Mercury.Core.Json.Parsers.Search
             {
                 Id = IdParser.ParseBrowse(renderer),
                 Title = FlexColumnParser.Parse(flex, 0),
-                Artists = FlexColumnParser.Parse(flex, 1, 2),
+                Artist = FlexColumnParser.Parse(flex, 1, 2),
                 Thumbnails = thumbnails,
             };
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,26 +9,16 @@ namespace Mercury.Core.Models
 {
     public abstract class MediaInfo
     {
-        
+        public abstract Media Base { get; }
     }
 
-    public class PlaylistInfo : MediaInfo
+    public class PlaylistInfo(Playlist original) : MediaInfo
     {
-        public PlaylistTrack[] Tracks { get; set; } = Array.Empty<PlaylistTrack>();
+        public PlaylistTrack[] Tracks { get; init; } = Array.Empty<PlaylistTrack>();
         public int TracksCount => Tracks.Length;
+        
+        public override Playlist Base { get; } = original;
     }
 
-    public abstract class PlaylistTrack : Track;
-
-    public class SongPlaylistTrack : PlaylistTrack
-    {
-        public string Album { get; set; } = string.Empty;
-    }
-
-    public class VideoPlaylistTrack : PlaylistTrack
-    {
-        public string Views { get; set; } = string.Empty;
-    }
-
-    public class EpisodePlaylistTrack : PlaylistTrack;
+    public class PlaylistTrack : Track;
 }
