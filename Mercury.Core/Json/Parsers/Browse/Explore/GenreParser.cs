@@ -8,6 +8,14 @@ internal static class GenreParser
 {
     public static Genre Parse(JElement renderer)
     {
+        var color = GetColor(renderer
+            .Get("musicNavigationButtonRenderer")
+            .Get("solid")
+            .Get("leftStripeColor")
+            .AsInt64()
+            .Or(0)
+        );
+        
         return new Genre()
         {
             Title = renderer
@@ -18,17 +26,16 @@ internal static class GenreParser
                 .Get("text")
                 .AsString()
                 .Or(string.Empty),
-            Color = GetColor (
-                renderer
-                    .Get("musicNavigationButtonRenderer")
-                    .Get("solid")
-                    .Get("leftStripeColor")
-                    .AsInt32()
-                    .Or(0)
-            ),
+            Color = color,
+            BrowseParam = renderer
+                .Get("musicNavigationButtonRenderer")
+                .Get("clickCommand")
+                .Get("browseEndpoint")
+                .Get("params")
+                .AsString()
         };
     }
 
-    private static Color GetColor(int color)
-        => System.Drawing.Color.FromArgb(color);
+    private static Color GetColor(long argb)
+        => System.Drawing.Color.FromArgb((int)(uint)argb);
 }

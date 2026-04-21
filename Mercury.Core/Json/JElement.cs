@@ -186,6 +186,14 @@ internal readonly struct JElement
 
         return null;
     }
+    
+    public long? AsInt64()
+    {
+        if (element.TryGetInt64(out long value))
+            return value;
+
+        return null;
+    }
 
     /// <summary>
     /// Converts this element to an <see cref="double"/> if possible.

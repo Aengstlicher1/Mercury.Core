@@ -41,16 +41,29 @@ namespace Mercury.Core.Services
             
             return new ExploreFeed()
             {
-                Genres = await HandleGenres(contents.GetAt(2).Get("musicCarouselShelfRenderer"), cToken),
+                Genres = HandleGenres(contents.GetAt(2).Get("musicCarouselShelfRenderer"), cToken),
+                Trending = HandleTrending(contents.GetAt(3).Get("musicCarouselShelfRenderer"), cToken),
             };
         }
 
-        private async Task<GenresCategory> HandleGenres(JElement renderer, CancellationToken cToken = default)
+        private TrendingCategory HandleTrending(JElement renderer, CancellationToken cToken = default)
+        {
+            Collection<Track> tracks;
+
+            foreach (var track in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            {
+                SongParser.Parse(track);
+            }
+            
+            return null;
+        }
+        
+        private GenresCategory HandleGenres(JElement renderer, CancellationToken cToken = default)
         {
             Collection<Genre> genres = new();
-            foreach (var jGenre in renderer.Get("contents").AsArray())
+            foreach (var genre in renderer.Get("contents").AsArray().Or(JArray.Empty))
             {
-                genres.Add(GenreParser.Parse(jGenre));
+                genres.Add(GenreParser.Parse(genre));
             }
             
             return new GenresCategory()
