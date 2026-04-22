@@ -11,6 +11,14 @@ namespace Mercury.Core.Json.Parsers.Search.Category
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
             var flex = FlexColumnParser.GetFlex(renderer);
+            var runs = renderer
+                .Get("flexColumns")
+                .GetAt(1)
+                .Get("musicResponsiveListItemFlexColumnRenderer")
+                .Get("text")
+                .Get("runs")
+                .AsArray()
+                .Or(JArray.Empty);
 
             // Assemble Song
             return new Song()
@@ -19,8 +27,8 @@ namespace Mercury.Core.Json.Parsers.Search.Category
                 Thumbnails = thumbnails,
                 Title = FlexColumnParser.Parse(flex, 0),
                 Artist = FlexColumnParser.Parse(flex, 1),
-                Album = FlexColumnParser.Parse(flex, 1, 2),
-                Duration = FlexColumnParser.Parse(flex, 1, 4)
+                Album = runs.Length >= 3 ? FlexColumnParser.Parse(flex, 1, 2) : string.Empty,
+                Duration = FlexColumnParser.Parse(flex, 1, runs.Length - 1)
             };
         }
     }

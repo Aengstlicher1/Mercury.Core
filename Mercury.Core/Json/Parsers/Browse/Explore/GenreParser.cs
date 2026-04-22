@@ -33,6 +33,7 @@ internal static class GenreParser
                 .Get("browseEndpoint")
                 .Get("params")
                 .AsString()
+                .Or(string.Empty),
         };
     }
 
