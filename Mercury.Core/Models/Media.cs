@@ -8,11 +8,17 @@ public abstract class Media
     /// <summary>
     /// Browse ID of the Media
     /// </summary>
-    public virtual string Id { get; set; } = "";
+    public virtual string Id { get; init; } = "";
     public ThumbArray Thumbnails { get; set; } = ThumbArray.Empty;
     public virtual string Title { get; init; } = "";
     public virtual string Artist { get; init; } = "";
     public virtual MediaCategory Type { get; } = MediaCategory.None;
+
+    public override bool Equals(object? obj)
+        => obj is Media other && Id == other.Id;
+
+    public override int GetHashCode()
+        => Id.GetHashCode();
 }
 
 public abstract class Track : Media
@@ -20,7 +26,7 @@ public abstract class Track : Media
     /// <summary>
     /// Video ID of the Media
     /// </summary>
-    public override string Id { get; set; } = "";
+    public override string Id { get; init; } = "";
     public virtual string Duration { get; set; } = "";
 
     public TimeSpan DurationTimeSpan
