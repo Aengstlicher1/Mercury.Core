@@ -1,6 +1,8 @@
 ﻿using Mercury.Core.Models;
 using Mercury.Core.Network;
 using System.Text.Json;
+using Mercury.Core.Json.Parsers.Lyrics;
+using Mercury.Core.Utils;
 
 
 namespace Mercury.Core.Services
@@ -9,7 +11,7 @@ namespace Mercury.Core.Services
     {
         private const string BaseUrl = "https://lrclib.net/api";
 
-        public async Task<LyricsResult?> GetLyricsAsync(Track track)
+        public async Task<Lyrics?> GetLyricsAsync(Track track)
         {
             try
             {
@@ -22,12 +24,18 @@ namespace Mercury.Core.Services
                 if (!response.IsSuccessStatusCode)
                     return null;
 
-                var jsonString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<LyricsResult>(jsonString);
+                var text = await response.Content.ReadAsStringAsync();
+                using IDisposable _ = text.ParseJson(out var json);
+                return LyricResultParser.Parse(json);
             }
             catch (HttpRequestException ex)
             {
-                return new LyricsResult() { PlainLyrics = "Http Error: " + ex.Message };
+                return new Lyrics() { PlainLyrics = new(
+                [
+                    new LyricLine{Content = "Http Error: " + ex.Message} 
+                ]
+                )};
+                
             }
         }
     }
