@@ -1,3 +1,5 @@
+using System;
+
 namespace Mercury.Core.Models;
 
 public class LyricLine

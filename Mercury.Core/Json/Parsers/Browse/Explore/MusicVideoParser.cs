@@ -1,4 +1,5 @@
-﻿using Mercury.Core.Json.Parsers.Generic;
+﻿using System.Linq;
+using Mercury.Core.Json.Parsers.Generic;
 using Mercury.Core.Models;
 using Mercury.Core.Utils;
 

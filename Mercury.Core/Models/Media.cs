@@ -1,4 +1,5 @@
-﻿using static Mercury.Core.Models.Enums;
+﻿using System;
+using static Mercury.Core.Models.Enums;
 
 namespace Mercury.Core.Models;
 
