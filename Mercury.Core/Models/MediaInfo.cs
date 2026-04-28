@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -14,8 +15,8 @@ namespace Mercury.Core.Models
 
     public class PlaylistInfo(Playlist original) : MediaInfo
     {
-        public PlaylistTrack[] Tracks { get; init; } = Array.Empty<PlaylistTrack>();
-        public int TracksCount => Tracks.Length;
+        public IReadOnlyList<PlaylistTrack> Tracks { get; init; } = new List<PlaylistTrack>();
+        public int TracksCount => Tracks.Count;
         
         public override Playlist Base { get; } = original;
     }

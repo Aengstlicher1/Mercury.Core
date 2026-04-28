@@ -114,8 +114,5 @@ namespace Mercury.Core.Models
         {
             return $"{Width}x{Height}";
         }
-
-        public override bool Equals([NotNullWhen(true)] object? obj)
-            =>  obj is Dimensions d && this.Width == d.Width && this.Height == d.Height;
     }
 }

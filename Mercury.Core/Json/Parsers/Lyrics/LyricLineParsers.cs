@@ -19,16 +19,16 @@ public static class LyricLineParsers
                     var parts = timestamp.Split(':', '.');
                     var time = new TimeSpan(
                         0,
+                        0,
                         int.Parse(parts[0]),
                         int.Parse(parts[1]),
-                        0,
                         int.Parse(parts[2]) * 10
                     );
 
                     return new LyricLine
                     {
                         Content = content,
-                        Duration = time
+                        Timing = time
                     };
                 })
                 .Where(ll => string.IsNullOrWhiteSpace(ll.Content) is not true)
