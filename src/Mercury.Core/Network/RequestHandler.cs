@@ -80,7 +80,7 @@ namespace Mercury.Core.Network
             if (YoutubeMusic.User.IsAuthenticated)
             {
                 request.Headers.TryAddWithoutValidation("Authorization", YoutubeMusic.User.GenerateSapiSidHash());
-                request.Headers.Add("Cookie", YoutubeMusic.User.CurrentAuthTokens!.FullCookies);
+                request.Headers.Add("Cookie", YoutubeMusic.User.CurrentAuthTokens!.RawCookies);
                 request.Headers.Add("Origin", "https://music.youtube.com");
                 request.Headers.Add("X-Origin", "https://music.youtube.com");
                 request.Headers.Add("Referer", "https://music.youtube.com/");

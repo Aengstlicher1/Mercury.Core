@@ -25,5 +25,5 @@ public class CookieAuthTokens
     public string VisitorInfo { get; init; } = string.Empty;
 
     // Raw cookie string for requests
-    public string FullCookies { get; init; } = string.Empty;
+    public string RawCookies { get; init; } = string.Empty;
 }
