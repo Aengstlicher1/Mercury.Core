@@ -1,4 +1,5 @@
-﻿using Mercury.Core.Json;
+﻿using System.Net.Http.Headers;
+using Mercury.Core.Json;
 using Mercury.Core.Utils;
 using System.Text;
 using System.Text.Json;
@@ -44,10 +45,6 @@ namespace Mercury.Core.Network
                 content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
             }
 
-            # if DEBUG
-            var test = await response.Content.ReadAsStringAsync();
-            # endif
-
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException("HTTP request failed.", new(content), response.StatusCode);
 
@@ -62,9 +59,11 @@ namespace Mercury.Core.Network
         )
         {
             if (string.IsNullOrWhiteSpace(VisitorData))
-                VisitorData = await FetchVisitorDataAsync();
+                VisitorData = await FetchVisitorDataAsync(cToken);
 
-            Uri requestUri = new(url + client.ApiKey);
+            Uri requestUri = YoutubeMusic.User.IsAuthenticated
+                ? new Uri(url + "?prettyPrint=false")
+                : new Uri(url + client.ApiKey);
             HttpRequestMessage request = new(HttpMethod.Post, requestUri);
 
             client.Gl = geoLocation;
@@ -77,6 +76,20 @@ namespace Mercury.Core.Network
                 foreach (var header in client.Headers)
                     request.Headers.Add(header.Key, header.Value);
 
+            // Handle authenticated requests with additional headers, while keeping the unauthenticated requests working
+            if (YoutubeMusic.User.IsAuthenticated)
+            {
+                request.Headers.TryAddWithoutValidation("Authorization", YoutubeMusic.User.GenerateSapiSidHash());
+                request.Headers.Add("Cookie", YoutubeMusic.User.CurrentAuthTokens!.FullCookies);
+                request.Headers.Add("Origin", "https://music.youtube.com");
+                request.Headers.Add("X-Origin", "https://music.youtube.com");
+                request.Headers.Add("Referer", "https://music.youtube.com/");
+                request.Headers.Add("X-Goog-AuthUser", "0");
+                request.Headers.Add("X-Youtube-Bootstrap-Logged-In", "true");
+                request.Headers.Add("X-Youtube-Client-Name", "67");
+                request.Headers.Add("X-Youtube-Client-Version", "1.20260426.12.00");
+            }
+            
             if (body.Count != 0)
             {
                 string json = JsonSerializer.Serialize(body, jsonOptions);
@@ -85,7 +98,7 @@ namespace Mercury.Core.Network
 
             cToken.ThrowIfCancellationRequested();
 
-            return await httpClient.SendAsync(request).ConfigureAwait(false);
+            return await httpClient.SendAsync(request, cToken).ConfigureAwait(false);
         }
 
         private static bool IsBotResponse(HttpResponseMessage response, string content)

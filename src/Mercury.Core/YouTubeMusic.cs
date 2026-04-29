@@ -4,12 +4,14 @@ namespace Mercury.Core
 {
     public static class YoutubeMusic
     {
-        public static SearchService Search = new SearchService();
+        public static readonly SearchService Search = new SearchService();
 
-        public static PlayerService Player = new PlayerService();
+        public static readonly PlayerService Player = new PlayerService();
 
-        public static LyricsService Lyrics = new LyricsService();
+        public static readonly LyricsService Lyrics = new LyricsService();
 
-        public static BrowseService Browse = new BrowseService();
+        public static readonly BrowseService Browse = new BrowseService();
+        
+        public static readonly UserService   User   = new UserService();
     }
 }
