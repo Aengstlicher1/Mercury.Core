@@ -114,26 +114,26 @@ namespace Mercury.Core.Services
         
         //\\ Browse Endpoint for normal Model //\\
 
-        public async Task<Media> GetAsync(string id, MediaCategory category, CancellationToken cToken = default)
+        public async Task<Media?> GetAsync(string id, CancellationToken cToken = default)
         {
-            return category switch
+            return id switch
             {
-                MediaCategory.Song or 
-                MediaCategory.Video         => await HandleNext(id, category, cToken),
-                MediaCategory.Episode       => await HandleEpisode(id, cToken),
-                MediaCategory.Artist        => await HandleArtists(id, cToken),
-                MediaCategory.Profile       => await HandleProfiles(id, cToken),
-                MediaCategory.Album or 
-                MediaCategory.Playlist or
-                MediaCategory.Podcast       => await HandleBrowse(id, category, cToken),
-                _                           => null!
+                _ when id.StartsWith("MPRE")  => await HandleBrowse(id, MediaCategory.Album, cToken),
+                _ when id.StartsWith("MPSP")  => await HandleBrowse(id, MediaCategory.Podcast, cToken),
+                _ when id.StartsWith("VL") 
+                       || id.StartsWith("PL") => await HandleBrowse(id, MediaCategory.Playlist, cToken),
+                _ when id.StartsWith("UC")    => await HandleArtists(id, cToken),
+                _ when id.StartsWith("FE")    => await HandleProfiles(id, cToken),
+                _ when id.Length == 11        => await HandleNext(id, cToken),
+                _ => null
             };
         }
 
-        private async Task<Media> HandleNext(string videoId, MediaCategory category, CancellationToken cToken = default)
+
+        private async Task<Media> HandleNext(string videoId, CancellationToken cToken = default)
         {
             if (string.IsNullOrWhiteSpace(videoId))
-                throw new ArgumentNullException("videoId");
+                throw new ArgumentNullException(nameof(videoId));
 
             Dictionary<string, object?> payload = new()
             {
@@ -162,14 +162,18 @@ namespace Mercury.Core.Services
                 .GetAt(0)
                 .Get("playlistPanelVideoRenderer");
 
-            Media result = category switch
-            {
-                MediaCategory.Song      => SongParser.Parse(renderer),
-                MediaCategory.Video     => VideoParser.Parse(renderer),
-                _ => null!
-            };
+            var musicVideoType = renderer
+                .Get("navigationEndpoint")
+                .Get("watchEndpoint")
+                .Get("watchEndpointMusicSupportedConfigs")
+                .Get("watchEndpointMusicConfig")
+                .Get("musicVideoType")
+                .AsString()
+                .Or("");
 
-            return result;
+            return musicVideoType == "MUSIC_VIDEO_TYPE_ATV"
+                ? SongParser.Parse(renderer)
+                : VideoParser.Parse(renderer);
         }
 
         private async Task<Media> HandleBrowse(string browseId, MediaCategory category, CancellationToken cToken = default)

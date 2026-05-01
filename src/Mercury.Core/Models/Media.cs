@@ -72,8 +72,6 @@ public class Video : Track
 /// <summary>Episode search result</summary>
 public class Episode : Track
 {
-    public string BrowseId { get; internal set; } = "";
-    
     public override MediaCategory Type { get; } = MediaCategory.Episode;
 
     public string PodcastName { get; set; } = "";

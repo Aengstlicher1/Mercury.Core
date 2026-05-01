@@ -15,13 +15,6 @@ namespace Mercury.Core.Json.Parsers.Search
 
             return new Episode()
             {
-                BrowseId = IdParser.ParseBrowse(renderer
-                    .Get("flexColumns")
-                    .GetAt(0)
-                    .Get("musicResponsiveListItemFlexColumnRenderer")
-                    .Get("text")
-                    .Get("runs")
-                    .GetAt(0)),
                 Id = renderer
                     .Get("overlay")
                     .Get("musicItemThumbnailOverlayRenderer")
