@@ -31,7 +31,6 @@ public static class LyricLineParsers
                         Timing = time
                     };
                 })
-                .Where(ll => string.IsNullOrWhiteSpace(ll.Content) is not true)
                 .ToList()
         );
     }
@@ -42,7 +41,6 @@ public static class LyricLineParsers
         return new Collection<LyricLine>(
             lines
                 .Select(line => new LyricLine { Content = line.Trim() })
-                .Where(ll => string.IsNullOrWhiteSpace(ll.Content) is not true)
                 .ToList()
         );
     }
