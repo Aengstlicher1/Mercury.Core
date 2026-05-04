@@ -235,7 +235,7 @@ namespace Mercury.Core.Services
         private async Task<Media> HandleBrowse(string browseId, MediaCategory category, CancellationToken cToken = default)
         {
             if (string.IsNullOrWhiteSpace(browseId))
-                throw new ArgumentNullException("browseId");
+                throw new ArgumentNullException(nameof(browseId));
 
             Dictionary<string, object?> payload = new()
             {

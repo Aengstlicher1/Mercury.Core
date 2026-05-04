@@ -8,7 +8,7 @@ namespace Mercury.Core.Json.Parsers.User;
 
 internal static class PlaylistParser
 {
-    public static LibraryPlaylist Parse(JElement renderer)
+    public static Playlist Parse(JElement renderer)
     {
         var thumbnails = ThumbnailParser.Parse(renderer
             .Get("thumbnailRenderer")
@@ -22,7 +22,7 @@ internal static class PlaylistParser
             .Or(JArray.Empty)
             .Length == 1;
         
-        return new LibraryPlaylist()
+        return new Playlist()
         {
             Id = IdParser.ParseBrowse(renderer),
             Title = renderer
@@ -33,7 +33,7 @@ internal static class PlaylistParser
                 .AsString()
                 .Or(string.Empty),
             Artist = isAuto 
-                ? string.Empty
+                ? "Youtube Music"
                 : renderer
                     .Get("subtitle")
                     .Get("runs")
@@ -41,7 +41,6 @@ internal static class PlaylistParser
                     .Get("text")
                     .AsString()
                     .Or(string.Empty),
-            IsAutoPlaylist = isAuto,
             Thumbnails = thumbnails
         };
     }
