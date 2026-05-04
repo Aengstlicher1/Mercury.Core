@@ -17,6 +17,11 @@ public class Entity
     
     public string Id { get; set; } = string.Empty;
 
+    public override string ToString()
+    {
+        return Name;
+    }
+    
 
     public static readonly Entity YoutubeMusic
         = new Entity()

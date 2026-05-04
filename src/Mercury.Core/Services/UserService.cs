@@ -84,8 +84,8 @@ public class UserService
 
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var input = $"{timestamp} {CurrentAuthTokens.SAPISID} {origin}";
-        var hash = Convert.ToHexStringLower(
-            SHA1.HashData(Encoding.UTF8.GetBytes(input)));
+        var hash = Convert.ToHexString(
+            SHA1.HashData(Encoding.UTF8.GetBytes(input))).ToLower();
 
         return $"SAPISIDHASH {timestamp}_{hash} "
              + $"SAPISID1PHASH {timestamp}_{hash} "

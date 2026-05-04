@@ -128,7 +128,7 @@ public static class Conversion
         if (text is null)
             return null;
 
-        if (!text.Contains("ago") && DateTime.TryParse(text, CultureInfo.InvariantCulture, out DateTime result))
+        if (!text.Contains("ago") && DateTime.TryParse(text, out DateTime result))
             return result;
 
         text = text.Replace(" ago", "").Trim();
@@ -162,7 +162,7 @@ public static class Conversion
     public static int? ToInt32(
         this string? text)
     {
-        if (int.TryParse(text, CultureInfo.InvariantCulture, out int result))
+        if (int.TryParse(text, out int result))
             return result;
 
         return null;
@@ -176,7 +176,7 @@ public static class Conversion
     public static long? ToInt64(
         this string? text)
     {
-        if (long.TryParse(text, CultureInfo.InvariantCulture, out long result))
+        if (long.TryParse(text, out long result))
             return result;
 
         return null;
