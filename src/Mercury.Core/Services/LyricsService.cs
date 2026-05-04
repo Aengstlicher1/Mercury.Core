@@ -51,7 +51,7 @@ namespace Mercury.Core.Services
             {
                 // Build the lrclib.net /get query string.
                 // Artist and track name are URL-encoded to handle special characters.
-                var url = $"{BaseUrl}/get?artist_name={Uri.EscapeDataString(track.Artist)}&track_name={Uri.EscapeDataString(track.Title)}";
+                var url = $"{BaseUrl}/get?artist_name={track.Artist?.Name}&track_name={track.Title}";
 
                 // Append duration when available - lrclib uses it to pick the best match.
                 if (track.DurationTimeSpan.TotalSeconds > 0)

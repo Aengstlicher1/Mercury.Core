@@ -44,7 +44,7 @@ namespace Mercury.Core.Json.Parsers.Browse.Info
             {
                 Id = renderer.Get("playlistItemData").Get("videoId").AsString().Or(string.Empty),
                 Title = FlexColumnParser.Parse(flex, 0),
-                Artist = FlexColumnParser.Parse(flex, 1),
+                Artist = EntityParser.Parse(flex[1].Get("runs").GetAt(0)),
                 Duration = FixedColumnParser.Parse(fix, 0),
                 Thumbnails = thumbnails
             };

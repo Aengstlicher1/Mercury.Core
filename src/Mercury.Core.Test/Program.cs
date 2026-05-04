@@ -9,10 +9,10 @@ namespace Mercury.Core.Test
     {
         public static async Task Main()
         {
-            YoutubeMusic.User.SetTokens("");
             var startTime = DateTime.Now;
-            
-            var test = await YoutubeMusic.User.GetLibraryPlaylistsAsync();
+
+            var test = await YoutubeMusic.Search.SearchAsync("kanye");
+            var gupp = await YoutubeMusic.Browse.GetAsync(test!.First(x => x.Type is MediaCategory.Playlist).Id);
             
             var endTime = DateTime.Now;
             Debug.WriteLine("The test took: " + (endTime - startTime));

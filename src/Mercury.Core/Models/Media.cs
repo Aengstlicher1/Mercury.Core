@@ -11,7 +11,7 @@ public abstract class Media
     public virtual string Id { get; init; } = "";
     public ThumbArray Thumbnails { get; set; } = ThumbArray.Empty;
     public virtual string Title { get; init; } = "";
-    public virtual string Artist { get; init; } = "";
+    public virtual Entity? Artist { get; init; }
     public virtual MediaCategory Type { get; } = MediaCategory.None;
     
     public virtual string Url => $"https://music.youtube.com/browse/{Id}";
@@ -94,7 +94,7 @@ public class Artist : Media
 
     public string Audience { get; set; } = "";
     
-    public string Url => $"https://music.youtube.com/channel/{Id}";
+    public override string Url => $"https://music.youtube.com/channel/{Id}";
 }
 
 /// <summary>Playlist search result</summary>
@@ -106,7 +106,7 @@ public class Playlist : Media
 
     public string ItemCount { get; set; } = "";
     
-    public string Url => $"https://music.youtube.com/playlist?list={Id}";
+    public override string Url => $"https://music.youtube.com/playlist?list={Id}";
 }
 
 /// <summary>Podcast search result</summary>
@@ -114,7 +114,7 @@ public class Podcast : Media
 {
     public override MediaCategory Type { get; } = MediaCategory.Podcast;
 
-    public string Url => $"https://music.youtube.com/podcast/{Id}";
+    public override string Url => $"https://music.youtube.com/podcast/{Id}";
 }
 
 /// <summary>Profile search result</summary>

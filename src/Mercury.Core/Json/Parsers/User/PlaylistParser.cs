@@ -33,14 +33,11 @@ internal static class PlaylistParser
                 .AsString()
                 .Or(string.Empty),
             Artist = isAuto 
-                ? "Youtube Music"
-                : renderer
+                ? Entity.YoutubeMusic
+                : EntityParser.Parse(renderer
                     .Get("subtitle")
                     .Get("runs")
-                    .GetAt(2)
-                    .Get("text")
-                    .AsString()
-                    .Or(string.Empty),
+                    .GetAt(2)),
             Thumbnails = thumbnails
         };
     }

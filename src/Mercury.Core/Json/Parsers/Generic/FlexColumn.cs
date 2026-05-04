@@ -18,11 +18,8 @@ namespace Mercury.Core.Json.Parsers.Generic
                 .Get("runs")
                 .AsArray()
                 .Or(JArray.Empty);
-
-            var text = RunsParser.Parse(runs, runIndex);
-
-            if (text == null) Debug.WriteLine($"Unable to parse FlexColumn: {flex}", "PARSERS");
-            return text!;
+            
+            return RunsParser.Parse(runs, runIndex);
         }
 
         internal static JArray GetFlex(JElement renderer)

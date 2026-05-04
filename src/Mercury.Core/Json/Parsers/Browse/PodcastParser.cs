@@ -18,7 +18,7 @@ namespace Mercury.Core.Json.Parsers.Browse
             {
                 Id = browseId,
                 Title = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("title"))),
-                Artist = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("straplineTextOne"))),
+                Artist = EntityParser.Parse(RunsParser.GetRuns(renderer.Get("straplineTextOne"))[0]),
                 Thumbnails = thumbnails
             };
         }

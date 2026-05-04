@@ -30,14 +30,11 @@ internal static class MusicVideoParser
                 .AsString()
                 .Or(string.Empty),
             
-            Artist = renderer
+            Artist = EntityParser.Parse(
+                renderer
                 .Get("subtitle")
                 .Get("runs")
-                .GetAt(0)
-                .Get("text")
-                .AsString()
-                .Or(string.Empty),
-            
+                .GetAt(0)),
             Views = renderer
                 .Get("subtitle")
                 .Get("runs")
@@ -47,6 +44,7 @@ internal static class MusicVideoParser
                 .Or(string.Empty),
             Thumbnails = thumbnails,
         };
-        return vid.Artist.Any(char.IsDigit) ? null : vid;
+        
+        return vid;
     }
 }

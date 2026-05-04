@@ -16,12 +16,18 @@ namespace Mercury.Core.Json.Parsers.Search
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
             var flex = FlexColumnParser.GetFlex(renderer);
+            var entity = flex[1]
+                .Get("musicResponsiveListItemFlexColumnRenderer")
+                .Get("text")
+                .Get("runs")
+                .GetAt(2);
+
 
             return new Album()
             {
                 Id = IdParser.ParseBrowse(renderer),
                 Title = FlexColumnParser.Parse(flex, 0),
-                Artist = FlexColumnParser.Parse(flex, 1, 2),
+                Artist = EntityParser.Parse(entity),
                 Year = FlexColumnParser.Parse(flex, 1, 4),
                 Thumbnails = thumbnails
             };
