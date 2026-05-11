@@ -11,7 +11,7 @@ namespace Mercury.Core.Json.Parsers.Search
 {
     internal static class ArtistParser
     {
-        internal static Artist Parse(JElement renderer)
+        internal static Artist Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 

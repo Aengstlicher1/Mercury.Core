@@ -4,7 +4,7 @@ namespace Mercury.Core.Json.Parsers.Browse.Explore;
 
 internal static class TitleParser
 {
-    public static string Parse(JElement renderer)
+    public static string Parse(JObject renderer)
         => renderer
             .Get("header")
             .Get("musicCarouselShelfBasicHeaderRenderer")
@@ -13,5 +13,5 @@ internal static class TitleParser
             .GetAt(0)
             .Get("text")
             .AsString()
-            .Or(string.Empty);
+            .UnlessNull(string.Empty);
 }

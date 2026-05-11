@@ -10,7 +10,7 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class AlbumParser
     {
-        public static Album Parse(JElement renderer, string browseId)
+        public static Album Parse(JObject renderer, string browseId)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
@@ -19,7 +19,7 @@ namespace Mercury.Core.Json.Parsers.Browse
                 Id = browseId,
                 Title = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("title"))),
                 Year = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("subtitle")), 2),
-                Artist = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("straplineTextOne"))),
+                Artist = EntityParser.Parse(RunsParser.GetRuns(renderer.Get("straplineTextOne"))[0]),
                 Thumbnails = thumbnails
             };
         }

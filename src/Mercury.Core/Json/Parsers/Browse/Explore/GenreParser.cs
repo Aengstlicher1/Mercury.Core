@@ -6,14 +6,14 @@ namespace Mercury.Core.Json.Parsers.Browse.Explore;
 
 internal static class GenreParser
 {
-    public static Genre Parse(JElement renderer)
+    public static Genre Parse(JObject renderer)
     {
         var color = GetColor(renderer
             .Get("musicNavigationButtonRenderer")
             .Get("solid")
             .Get("leftStripeColor")
-            .AsInt64()
-            .Or(0)
+            .AsLong()
+            .UnlessNull(0)
         );
         
         return new Genre()
@@ -25,7 +25,7 @@ internal static class GenreParser
                 .GetAt(0)
                 .Get("text")
                 .AsString()
-                .Or(string.Empty),
+                .UnlessNull(string.Empty),
             Color = color,
             BrowseParam = renderer
                 .Get("musicNavigationButtonRenderer")
@@ -33,7 +33,7 @@ internal static class GenreParser
                 .Get("browseEndpoint")
                 .Get("params")
                 .AsString()
-                .Or(string.Empty),
+                .UnlessNull(string.Empty),
         };
     }
 

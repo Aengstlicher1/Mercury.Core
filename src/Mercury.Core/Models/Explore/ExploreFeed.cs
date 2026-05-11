@@ -2,11 +2,11 @@
 
 public class ExploreFeed
 {
-    public required ReleasesCategory Releases { get; init; }
+    public ReleasesCategory Releases { get; init; }
     
-    public required GenresCategory Genres { get; init; }
+    public GenresCategory Genres { get; init; }
     
-    public required TrendingCategory Trending { get; init; }
+    public TrendingCategory Trending { get; init; }
     
-    public required NewMusicVideosCategory NewMusicVideos { get; init; }
+    public NewMusicVideosCategory NewMusicVideos { get; init; }
 }

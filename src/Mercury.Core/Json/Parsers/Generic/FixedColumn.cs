@@ -18,15 +18,15 @@ namespace Mercury.Core.Json.Parsers.Generic
                 .GetAt(runIndex)
                 .Get("text")
                 .AsString()
-                .Or(string.Empty);
+                .UnlessNull(string.Empty);
         }
 
-        public static JArray GetFix(JElement parent)
+        public static JArray GetFix(JObject parent)
         {
             return parent
                 .Get("fixedColumns")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
         }
     }
 }

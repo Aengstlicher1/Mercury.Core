@@ -12,14 +12,14 @@ namespace Mercury.Core.Json.Parsers.Browse.Info
 {
     internal static class PlaylistInfoParser
     {
-        public static PlaylistInfo Parse(JElement renderer, Playlist original)
+        public static PlaylistInfo Parse(JObject renderer, Playlist original)
         {
             var tracks = renderer
                 .Get("contents")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
             
-            Collection<PlaylistTrack> playlistTracks = new();
+            Collection<PlaylistTrack> playlistTracks = [];
             foreach (var track in tracks)
             {
                 playlistTracks.Add(
@@ -33,7 +33,7 @@ namespace Mercury.Core.Json.Parsers.Browse.Info
             };
         }
 
-        public static PlaylistTrack ParsePlaylistTrack(JElement renderer)
+        public static PlaylistTrack ParsePlaylistTrack(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
@@ -42,9 +42,9 @@ namespace Mercury.Core.Json.Parsers.Browse.Info
 
             return new PlaylistTrack()
             {
-                Id = renderer.Get("playlistItemData").Get("videoId").AsString().Or(string.Empty),
+                Id = renderer.Get("playlistItemData").Get("videoId").AsString().UnlessNull(string.Empty),
                 Title = FlexColumnParser.Parse(flex, 0),
-                Artist = FlexColumnParser.Parse(flex, 1),
+                Artist = EntityParser.Parse(flex[1].Get("runs").GetAt(0)),
                 Duration = FixedColumnParser.Parse(fix, 0),
                 Thumbnails = thumbnails
             };

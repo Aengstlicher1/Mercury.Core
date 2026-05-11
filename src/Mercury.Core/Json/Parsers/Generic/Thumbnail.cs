@@ -8,13 +8,13 @@ namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class ThumbnailParser
     {
-        internal static ThumbArray Parse(JElement thumbRenderer)
+        internal static ThumbArray Parse(JObject thumbRenderer)
         {
             var thumbs = thumbRenderer
                 .Get("thumbnail")
                 .Get("thumbnails")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
 
             if (thumbs != null && thumbs.Length > 0)
             {
@@ -25,11 +25,11 @@ namespace Mercury.Core.Json.Parsers.Generic
                     thumbnails.Add(
                         new Thumbnail()
                         {
-                            Url = thumbs[i].Get("url").AsString().Or(string.Empty),
+                            Url = thumbs[i].Get("url").AsString().UnlessNull(string.Empty),
                             Size = new Dimensions()
                             {
-                                Width = thumbs[i].Get("width").AsInt32().Or(0),
-                                Height = thumbs[i].Get("height").AsInt32().Or(0)
+                                Width = thumbs[i].Get("width").AsInt().UnlessNull(0),
+                                Height = thumbs[i].Get("height").AsInt().UnlessNull(0)
                             }
                         }
                     );
@@ -44,7 +44,7 @@ namespace Mercury.Core.Json.Parsers.Generic
                 return ThumbArray.Empty;
         }
 
-        public static JElement GetThumbRenderer(JElement renderer)
+        public static JObject GetThumbRenderer(JObject renderer)
         {
             return renderer
                 .Get("thumbnail")

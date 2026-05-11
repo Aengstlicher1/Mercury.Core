@@ -11,8 +11,10 @@ public abstract class Media
     public virtual string Id { get; init; } = "";
     public ThumbArray Thumbnails { get; set; } = ThumbArray.Empty;
     public virtual string Title { get; init; } = "";
-    public virtual string Artist { get; init; } = "";
+    public virtual Entity? Artist { get; init; }
     public virtual MediaCategory Type { get; } = MediaCategory.None;
+    
+    public virtual string Url => $"https://music.youtube.com/browse/{Id}";
 
     public override bool Equals(object? obj)
         => obj is Media other && Id == other.Id;
@@ -28,6 +30,8 @@ public abstract class Track : Media
     /// </summary>
     public override string Id { get; init; } = "";
     public virtual string Duration { get; set; } = "";
+    
+    public override string Url => $"https://music.youtube.com/watch?v={Id}";
 
     public TimeSpan DurationTimeSpan
     {
@@ -53,10 +57,6 @@ public class Song : Track
     public override MediaCategory Type { get; } = MediaCategory.Song;
 
     public string Album { get; set; } = "";
-
-    public string Url => $"https://music.youtube.com/watch?v={Id}";
-    
-    
 }
 
 /// <summary>Video search result</summary>
@@ -65,22 +65,16 @@ public class Video : Track
     public override MediaCategory Type { get; } = MediaCategory.Video;
 
     public string Views { get; set; } = "";
-
-    public string Url => $"https://music.youtube.com/watch?v={Id}";
 }
 
 /// <summary>Episode search result</summary>
 public class Episode : Track
 {
-    public string BrowseId { get; internal set; } = "";
-    
     public override MediaCategory Type { get; } = MediaCategory.Episode;
 
     public string PodcastName { get; set; } = "";
     
     public string Date { get; set; } = "";
-    
-    public string Url => $"https://music.youtube.com/watch?v={Id}";
 }
 
 /// <summary>Album search result</summary>
@@ -90,7 +84,7 @@ public class Album : Media
 
     public string Year { get; set; } = "";
     
-    public string Url => $"https://music.youtube.com/browse/{Id}";
+    
 }
 
 /// <summary>Artist search result</summary>
@@ -100,7 +94,7 @@ public class Artist : Media
 
     public string Audience { get; set; } = "";
     
-    public string Url => $"https://music.youtube.com/channel/{Id}";
+    public override string Url => $"https://music.youtube.com/channel/{Id}";
 }
 
 /// <summary>Playlist search result</summary>
@@ -112,7 +106,7 @@ public class Playlist : Media
 
     public string ItemCount { get; set; } = "";
     
-    public string Url => $"https://music.youtube.com/playlist?list={Id}";
+    public override string Url => $"https://music.youtube.com/playlist?list={Id}";
 }
 
 /// <summary>Podcast search result</summary>
@@ -120,7 +114,7 @@ public class Podcast : Media
 {
     public override MediaCategory Type { get; } = MediaCategory.Podcast;
 
-    public string Url => $"https://music.youtube.com/podcast/{Id}";
+    public override string Url => $"https://music.youtube.com/podcast/{Id}";
 }
 
 /// <summary>Profile search result</summary>

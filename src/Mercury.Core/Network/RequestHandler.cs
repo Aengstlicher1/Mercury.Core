@@ -1,4 +1,6 @@
-﻿using Mercury.Core.Json;
+﻿using System.ComponentModel;
+using System.Net.Http.Headers;
+using Mercury.Core.Json;
 using Mercury.Core.Utils;
 using System.Text;
 using System.Text.Json;
@@ -19,7 +21,7 @@ namespace Mercury.Core.Network
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        public static async Task<string> SendAsync
+        private static async Task<string> SendAsync
         (
             string url,
             HttpMethod method,
@@ -28,7 +30,7 @@ namespace Mercury.Core.Network
             CancellationToken cToken = default
         )
         {
-            var client = clientType.ToClient();
+            var client = clientType.GetClient();
             if (client == null) throw new ArgumentNullException("ClientType");
 
             Dictionary<string, object?> body = payload ?? [];
@@ -44,16 +46,24 @@ namespace Mercury.Core.Network
                 content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
             }
 
-            # if DEBUG
-            var test = await response.Content.ReadAsStringAsync();
-            # endif
-
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException("HTTP request failed.", new(content), response.StatusCode);
 
             return content;
         }
 
+        private static Client? GetClient(this ClientType type) =>
+            type switch
+            {
+                ClientType.None => null,
+                ClientType.WebMusic => Client.WebMusic.Clone(),
+                ClientType.IOSMusic => Client.IOSMusic.Clone(),
+                ClientType.Web => Client.Web.Clone(),
+                ClientType.Android => Client.Android.Clone(),
+                ClientType.AndroidVR => Client.AndroidVR.Clone(),
+                _ => throw new InvalidEnumArgumentException($"Invalid client type: {type}.")
+            };
+        
         private static async Task<HttpResponseMessage> BuildAndSendAsync(
             string url,
             Client client,
@@ -62,9 +72,11 @@ namespace Mercury.Core.Network
         )
         {
             if (string.IsNullOrWhiteSpace(VisitorData))
-                VisitorData = await FetchVisitorDataAsync();
+                VisitorData = await FetchVisitorDataAsync(cToken);
 
-            Uri requestUri = new(url + client.ApiKey);
+            Uri requestUri = YoutubeMusic.User.IsAuthenticated
+                ? new Uri(url + "?prettyPrint=false")
+                : new Uri(url + client.ApiKey);
             HttpRequestMessage request = new(HttpMethod.Post, requestUri);
 
             client.Gl = geoLocation;
@@ -77,6 +89,20 @@ namespace Mercury.Core.Network
                 foreach (var header in client.Headers)
                     request.Headers.Add(header.Key, header.Value);
 
+            // Handle authenticated requests with additional headers, while keeping the unauthenticated requests working
+            if (YoutubeMusic.User.IsAuthenticated)
+            {
+                request.Headers.TryAddWithoutValidation("Authorization", YoutubeMusic.User.GenerateSapiSidHash());
+                request.Headers.Add("Cookie", YoutubeMusic.User.CurrentAuthTokens!.RawCookies);
+                request.Headers.Add("Origin", "https://music.youtube.com");
+                request.Headers.Add("X-Origin", "https://music.youtube.com");
+                request.Headers.Add("Referer", "https://music.youtube.com/");
+                request.Headers.Add("X-Goog-AuthUser", "0");
+                request.Headers.Add("X-Youtube-Bootstrap-Logged-In", "true");
+                request.Headers.Add("X-Youtube-Client-Name", "67");
+                request.Headers.Add("X-Youtube-Client-Version", "1.20260426.12.00");
+            }
+            
             if (body.Count != 0)
             {
                 string json = JsonSerializer.Serialize(body, jsonOptions);
@@ -85,7 +111,7 @@ namespace Mercury.Core.Network
 
             cToken.ThrowIfCancellationRequested();
 
-            return await httpClient.SendAsync(request).ConfigureAwait(false);
+            return await httpClient.SendAsync(request, cToken).ConfigureAwait(false);
         }
 
         private static bool IsBotResponse(HttpResponseMessage response, string content)
@@ -146,7 +172,7 @@ namespace Mercury.Core.Network
             var responseJson = await response.Content.ReadAsStringAsync(ct);
 
             using var doc = JsonDocument.Parse(responseJson);
-            return new JElement(doc.RootElement)
+            return new JObject(doc.RootElement)
                 .Get("responseContext")
                 .Get("visitorData")
                 .AsString()!;

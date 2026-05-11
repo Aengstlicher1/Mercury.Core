@@ -7,7 +7,7 @@ namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class EpisodeParser
     {
-        internal static Episode Parse(JElement renderer)
+        internal static Episode Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
@@ -15,7 +15,7 @@ namespace Mercury.Core.Json.Parsers.Search.Category
 
             return new Episode()
             {
-                Id = renderer.Get("playlistItemData").Get("videoId").AsString().Or(string.Empty),
+                Id = renderer.Get("playlistItemData").Get("videoId").AsString().UnlessNull(string.Empty),
                 Title = FlexColumnParser.Parse(flex, 0),
                 Date = FlexColumnParser.Parse(flex, 1),
                 PodcastName = FlexColumnParser.Parse(flex, 1, 2),

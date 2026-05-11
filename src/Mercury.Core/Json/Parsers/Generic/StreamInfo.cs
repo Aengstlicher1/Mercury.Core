@@ -6,7 +6,7 @@ namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class StreamInfoParser
     {
-        public static StreamInfo Parse(JElement format)
+        public static StreamInfo Parse(JObject format)
         {
             var type = GetInfoType(format);
 
@@ -19,70 +19,70 @@ namespace Mercury.Core.Json.Parsers.Generic
             };
         }
 
-        private static MuxedStreamInfo ParseMuxed(JElement format)
+        private static MuxedStreamInfo ParseMuxed(JObject format)
         {
             return new MuxedStreamInfo()
             {
-                ITag = format.Get("itag").AsInt32().Or(0),
-                Url = format.Get("url").AsString().Or(string.Empty),
-                MimeType = format.Get("mimeType").AsString().Or(string.Empty),
-                Bitrate = format.Get("bitrate").AsInt32().Or(0),
-                Quality = format.Get("quality").AsString().Or(string.Empty),
+                ITag = format.Get("itag").AsInt().UnlessNull(0),
+                Url = format.Get("url").AsString().UnlessNull(string.Empty),
+                MimeType = format.Get("mimeType").AsString().UnlessNull(string.Empty),
+                Bitrate = format.Get("bitrate").AsInt().UnlessNull(0),
+                Quality = format.Get("quality").AsString().UnlessNull(string.Empty),
                 Size = new Dimensions()
                 {
-                    Height = format.Get("height").AsInt32().Or(0),
-                    Width = format.Get("width").AsInt32().Or(0)
+                    Height = format.Get("height").AsInt().UnlessNull(0),
+                    Width = format.Get("width").AsInt().UnlessNull(0)
                 },
-                Fps = format.Get("fps").AsInt32().Or(0),
-                QualityLabel = format.Get("qualityLabel").AsString().Or(string.Empty),
-                AudioQuality = format.Get("audioQuality").AsString().Or(string.Empty)
+                Fps = format.Get("fps").AsInt().UnlessNull(0),
+                QualityLabel = format.Get("qualityLabel").AsString().UnlessNull(string.Empty),
+                AudioQuality = format.Get("audioQuality").AsString().UnlessNull(string.Empty)
             };
         }
 
-        private static VideoStreamInfo ParseVideo(JElement format)
+        private static VideoStreamInfo ParseVideo(JObject format)
         {
             return new VideoStreamInfo()
             {
-                ITag = format.Get("itag").AsInt32().Or(0),
-                Url = format.Get("url").AsString().Or(string.Empty),
-                MimeType = format.Get("mimeType").AsString().Or(string.Empty),
-                Bitrate = format.Get("bitrate").AsInt32().Or(0),
-                Quality = format.Get("quality").AsString().Or(string.Empty),
+                ITag = format.Get("itag").AsInt().UnlessNull(0),
+                Url = format.Get("url").AsString().UnlessNull(string.Empty),
+                MimeType = format.Get("mimeType").AsString().UnlessNull(string.Empty),
+                Bitrate = format.Get("bitrate").AsInt().UnlessNull(0),
+                Quality = format.Get("quality").AsString().UnlessNull(string.Empty),
                 Size = new Dimensions()
                 {
-                    Height = format.Get("height").AsInt32().Or(0),
-                    Width = format.Get("width").AsInt32().Or(0)
+                    Height = format.Get("height").AsInt().UnlessNull(0),
+                    Width = format.Get("width").AsInt().UnlessNull(0)
                 },
-                Fps = format.Get("fps").AsInt32().Or(0),
-                QualityLabel = format.Get("qualityLabel").AsString().Or(string.Empty),
-                AverageBitrate = format.Get("averageBitrate").AsInt32().Or(0)
+                Fps = format.Get("fps").AsInt().UnlessNull(0),
+                QualityLabel = format.Get("qualityLabel").AsString().UnlessNull(string.Empty),
+                AverageBitrate = format.Get("averageBitrate").AsInt().UnlessNull(0)
             };
         }
 
-        private static AudioStreamInfo ParseAudio(JElement format)
+        private static AudioStreamInfo ParseAudio(JObject format)
         {
-            var sampleRateStr = format.Get("audioSampleRate").AsString().Or(string.Empty);
+            var sampleRateStr = format.Get("audioSampleRate").AsString().UnlessNull(string.Empty);
 
             return new AudioStreamInfo()
             {
-                ITag = format.Get("itag").AsInt32().Or(0),
-                Url = format.Get("url").AsString().Or(string.Empty),
-                MimeType = format.Get("mimeType").AsString().Or(string.Empty),
-                Bitrate = format.Get("bitrate").AsInt32().Or(0),
-                Quality = format.Get("quality").AsString().Or(string.Empty),
-                AudioQuality = format.Get("audioQuality").AsString().Or(string.Empty),
+                ITag = format.Get("itag").AsInt().UnlessNull(0),
+                Url = format.Get("url").AsString().UnlessNull(string.Empty),
+                MimeType = format.Get("mimeType").AsString().UnlessNull(string.Empty),
+                Bitrate = format.Get("bitrate").AsInt().UnlessNull(0),
+                Quality = format.Get("quality").AsString().UnlessNull(string.Empty),
+                AudioQuality = format.Get("audioQuality").AsString().UnlessNull(string.Empty),
                 AudioSampleRate = int.Parse(sampleRateStr),
-                AverageBitrate = format.Get("averageBitrate").AsInt32().Or(0)
+                AverageBitrate = format.Get("averageBitrate").AsInt().UnlessNull(0)
             };
         }
 
-        private static StreamInfoType GetInfoType(JElement format)
+        private static StreamInfoType GetInfoType(JObject format)
         {
-            if (format.Contains("xtags", out JElement _))
+            if (format.Contains("xtags", out JObject _))
                 return StreamInfoType.Muxed;
-            else if (format.Get("mimeType").AsString().Or(string.Empty).Contains("video"))
+            else if (format.Get("mimeType").AsString().UnlessNull(string.Empty).Contains("video"))
                 return StreamInfoType.Video;
-            else if (format.Get("mimeType").AsString().Or(string.Empty).Contains("audio"))
+            else if (format.Get("mimeType").AsString().UnlessNull(string.Empty).Contains("audio"))
                 return StreamInfoType.Audio;
             else
                 throw new ArgumentException("WTF happened!?");

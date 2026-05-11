@@ -10,7 +10,7 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class ProfileParser
     {
-        public static Profile Parse(JElement renderer, string browseId)
+        public static Profile Parse(JObject renderer, string browseId)
         {
             var thumbnails = ThumbnailParser.Parse(renderer.Get("foregroundThumbnail").Get("musicThumbnailRenderer"));
 

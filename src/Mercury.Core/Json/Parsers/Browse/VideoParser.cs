@@ -11,15 +11,15 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class VideoParser
     {
-        public static Video Parse(JElement renderer)
+        public static Video Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(renderer);
 
             return new Video()
             {
-                Id = renderer.Get("videoId").AsString().Or(string.Empty),
-                Title = renderer.Get("title").Get("runs").GetAt(0).Get("text").AsString().Or(string.Empty),
-                Artist = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText"))),
+                Id = renderer.Get("videoId").AsString().UnlessNull(string.Empty),
+                Title = renderer.Get("title").Get("runs").GetAt(0).Get("text").AsString().UnlessNull(string.Empty),
+                Artist = EntityParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText"))[0]),
                 Views = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText")), 2),
                 Duration = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("lengthText"))),
                 Thumbnails = thumbnails,
