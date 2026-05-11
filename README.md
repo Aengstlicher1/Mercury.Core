@@ -48,28 +48,26 @@ Mercury.Core/
 │   │   │   ├── LyricsService.cs     # Synchronized lyrics from lrclib.net
 │   │   │   └── BrowseService.cs     # Home feed / browse categories
 │   │   ├── Models/
-│   │   │   ├── Media.cs             # Abstract base for all media types
+│   │   │   ├── Media.cs             # All Media (eg. Song, Video, Album, Playlist...)
 │   │   │   ├── StreamInfo.cs        # Audio/video stream info
 │   │   │   ├── StreamingData.cs     # Resolved stream container
-│   │   │   ├── Thumbnail.cs         # Thumbnail model + ThumbArray helper
+│   │   │   ├── Thumbnail.cs         # Thumbnail model + ThumbArray wrapper
 │   │   │   ├── LyricsResult.cs      # Plain + synced lyrics result
 │   │   │   ├── Category.cs          # Browse category model
-│   │   │   ├── Enums.cs             # MediaType and other enums
-│   │   │   └── Id.cs                # Strongly-typed ID wrapper
+│   │   │   └── Enums.cs             # MediaType and other enums
 │   │   ├── Json/
 │   │   │   ├── Parsers/
-│   │   │   │   ├── Generic/         # Low-level JSON element parsers
-│   │   │   │   ├── Search/          # Search result parsers per media type
+│   │   │   │   ├── Generic/         # Generic parsers that are used in multiple places
+│   │   │   │   ├── Search/          # Search result parsers
 │   │   │   │   └── Browse/          # Browse feed parsers
-│   │   │   └── Syntax.cs            # JSON path syntax helpers
 │   │   ├── Network/
 │   │   │   ├── Client.cs            # HTTP client for YouTube Music API
 │   │   │   ├── ClientType.cs        # Client type configuration
 │   │   │   ├── Endpoints.cs         # API endpoint definitions
 │   │   │   └── RequestHandler.cs    # Request builder with headers and signing
 │   │   └── Utils/
-│   │       └── Conversion.cs        # Data conversion utilities
-│   └── Mercury.Core.Test/           # Unit / integration tests
+│   │   │   └── Syntax.cs            # JSON path syntax helpers
+│   └── Mercury.Core.Test/           # Test project(for internal testing)
 ├── Mercury.Core.sln
 ├── icon.png
 ├── LICENSE
@@ -109,7 +107,6 @@ var categories = await YouTubeMusic.Browse.GetHomeFeedAsync();
 | `LyricsResult` | Contains `PlainLyrics` (string) and `SyncedLyrics` (timestamped lines) |
 | `Thumbnail` | Thumbnail URL, width, height. `ThumbArray` provides collection helpers |
 | `Category` | Browse category with a title and list of `Media` items |
-| `Id` | Strongly-typed wrapper around a YouTube video/entity ID |
 
 ---
 
