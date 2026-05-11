@@ -133,7 +133,7 @@ dotnet build
 
 ## License
 
-This project is licensed under the terms of the [GPL-3.0 License](LICENSE).
+This project is licensed under the terms of the [MIT License](LICENSE).
 
 ---
 
