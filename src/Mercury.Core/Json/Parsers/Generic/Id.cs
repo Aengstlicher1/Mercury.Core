@@ -9,15 +9,15 @@ namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class IdParser
     {
-        internal static string ParseBrowse(JElement renderer)
+        internal static string ParseBrowse(JObject renderer)
             => renderer
                 .Get("navigationEndpoint")
                 .Get("browseEndpoint")
                 .Get("browseId")
                 .AsString()
-                .Or(string.Empty);
+                .UnlessNull(string.Empty);
 
-        internal static string ParseWatch(JElement renderer)
+        internal static string ParseWatch(JObject renderer)
             => renderer
                 .Get("flexColumns")
                 .GetAt(0)
@@ -29,6 +29,6 @@ namespace Mercury.Core.Json.Parsers.Generic
                 .Get("watchEndpoint")
                 .Get("videoId")
                 .AsString()
-                .Or(string.Empty);
+                .UnlessNull(string.Empty);
     }
 }

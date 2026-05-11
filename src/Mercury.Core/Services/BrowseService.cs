@@ -36,7 +36,7 @@ namespace Mercury.Core.Services
 
             cToken.ThrowIfCancellationRequested();
             
-            using IDisposable _ = response.ParseJson(out var json);
+            using IDisposable _ = response.GetJson(out var json);
 
             var contents = json
                 .Get("contents")
@@ -60,13 +60,13 @@ namespace Mercury.Core.Services
         /// <summary>
         /// Handles the <see cref="NewMusicVideosCategory"/> parsing of the <see cref="ExploreFeed"/>
         /// </summary>
-        /// <param name="renderer">The <see cref="JElement"/> of the NewMusicVideos category on the Explore page</param>
+        /// <param name="renderer">The <see cref="JObject"/> of the NewMusicVideos category on the Explore page</param>
         /// <param name="cToken"><see cref="CancellationToken"/> to cancel the request</param>
         /// <returns>A <see cref="NewMusicVideosCategory"/> for the <see cref="ExploreFeed"/></returns>
-        private NewMusicVideosCategory HandleNewMusicVideos(JElement renderer, CancellationToken cToken = default)
+        private NewMusicVideosCategory HandleNewMusicVideos(JObject renderer, CancellationToken cToken = default)
         {
             Collection<Video> videos = new();
-            foreach (var video in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            foreach (var video in renderer.Get("contents").AsArray().UnlessNull(JArray.Empty))
             {
                 var vid = MusicVideoParser.Parse(video.Get("musicTwoRowItemRenderer"));
                 if (vid != null)
@@ -83,13 +83,13 @@ namespace Mercury.Core.Services
         /// <summary>
         /// Handles the <see cref="ReleasesCategory"/> parsing of the <see cref="ExploreFeed"/>
         /// </summary>
-        /// <param name="renderer">The <see cref="JElement"/> of the Releases category on the Explore page</param>
+        /// <param name="renderer">The <see cref="JObject"/> of the Releases category on the Explore page</param>
         /// <param name="cToken"><see cref="CancellationToken"/> to cancel the request</param>
         /// <returns>A <see cref="ReleasesCategory"/> for the <see cref="ExploreFeed"/></returns>
-        private ReleasesCategory HandleReleases(JElement renderer, CancellationToken cToken = default)
+        private ReleasesCategory HandleReleases(JObject renderer, CancellationToken cToken = default)
         {
             Collection<Album> albums = new();
-            foreach (var media in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            foreach (var media in renderer.Get("contents").AsArray().UnlessNull(JArray.Empty))
             {
                 var mRenderer = media.Get("musicTwoRowItemRenderer");
                 albums.Add(Mercury.Core.Json.Parsers.Browse.Explore.AlbumParser.Parse(mRenderer));
@@ -105,13 +105,13 @@ namespace Mercury.Core.Services
         /// <summary>
         /// Handles the <see cref="GenresCategory"/> parsing of the <see cref="ExploreFeed"/>
         /// </summary>
-        /// <param name="renderer">The <see cref="JElement"/> of the Genres category on the Explore page</param>
+        /// <param name="renderer">The <see cref="JObject"/> of the Genres category on the Explore page</param>
         /// <param name="cToken"><see cref="CancellationToken"/> to cancel the request</param>
         /// <returns>A <see cref="GenresCategory"/> for the <see cref="ExploreFeed"/></returns>
-        private GenresCategory HandleGenres(JElement renderer, CancellationToken cToken = default)
+        private GenresCategory HandleGenres(JObject renderer, CancellationToken cToken = default)
         {
             Collection<Genre> genres = new();
-            foreach (var genre in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            foreach (var genre in renderer.Get("contents").AsArray().UnlessNull(JArray.Empty))
             {
                 genres.Add(GenreParser.Parse(genre));
             }
@@ -126,14 +126,14 @@ namespace Mercury.Core.Services
         /// <summary>
         /// Handles the <see cref="TrendingCategory"/> parsing of the <see cref="ExploreFeed"/>
         /// </summary>
-        /// <param name="renderer">The <see cref="JElement"/> of the Trending category on the Explore page</param>
+        /// <param name="renderer">The <see cref="JObject"/> of the Trending category on the Explore page</param>
         /// <param name="cToken"><see cref="CancellationToken"/> to cancel the request</param>
         /// <returns>A <see cref="TrendingCategory"/> for the <see cref="ExploreFeed"/></returns>
-        private TrendingCategory HandleTrending(JElement renderer, CancellationToken cToken = default)
+        private TrendingCategory HandleTrending(JObject renderer, CancellationToken cToken = default)
         {
             Collection<Track> tracks = new();
 
-            foreach (var track in renderer.Get("contents").AsArray().Or(JArray.Empty))
+            foreach (var track in renderer.Get("contents").AsArray().UnlessNull(JArray.Empty))
             {
                 tracks.Add(PlaylistInfoParser.ParsePlaylistTrack(track.Get("musicResponsiveListItemRenderer")));
             }
@@ -187,7 +187,7 @@ namespace Mercury.Core.Services
 
             cToken.ThrowIfCancellationRequested();
 
-            using IDisposable _ = response.ParseJson(out var json);
+            using IDisposable _ = response.GetJson(out var json);
 
             var renderer = json
                 .Get("contents")
@@ -212,7 +212,7 @@ namespace Mercury.Core.Services
                 .Get("watchEndpointMusicConfig")
                 .Get("musicVideoType")
                 .AsString()
-                .Or("");
+                .UnlessNull("");
 
             return musicVideoType == "MUSIC_VIDEO_TYPE_ATV"
                 ? SongParser.Parse(renderer)
@@ -246,7 +246,7 @@ namespace Mercury.Core.Services
 
             cToken.ThrowIfCancellationRequested();
 
-            using IDisposable _ = response.ParseJson(out var json);
+            using IDisposable _ = response.GetJson(out var json);
 
             var renderer = json
                 .Get("contents")
@@ -292,7 +292,7 @@ namespace Mercury.Core.Services
 
             cToken.ThrowIfCancellationRequested();
 
-            using IDisposable _ = response.ParseJson(out var json);
+            using IDisposable _ = response.GetJson(out var json);
 
             var renderer = json
                 .Get("header")
@@ -322,7 +322,7 @@ namespace Mercury.Core.Services
 
             cToken.ThrowIfCancellationRequested();
 
-            using IDisposable _ = response.ParseJson(out var json);
+            using IDisposable _ = response.GetJson(out var json);
 
             var renderer = json
                 .Get("header")
@@ -364,8 +364,8 @@ namespace Mercury.Core.Services
 
             cToken.ThrowIfCancellationRequested();
 
-            nextResponse.ParseJson(out var nextJson);
-            browseResponse.ParseJson(out var browseJson);
+            nextResponse.GetJson(out var nextJson);
+            browseResponse.GetJson(out var browseJson);
 
             var nextRenderer = nextJson
                 .Get("contents")
@@ -444,7 +444,7 @@ namespace Mercury.Core.Services
 
             var response = await RequestHandler.GetAsync(Endpoints.Browse, payload, ClientType.WebMusic, cToken);
 
-            IDisposable _ = response.ParseJson(out var json);
+            IDisposable _ = response.GetJson(out var json);
 
             var renderer = json
                 .Get("contents")

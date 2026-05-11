@@ -66,7 +66,7 @@ namespace Mercury.Core.Services
                 var text = await response.Content.ReadAsStringAsync();
 
                 // Parse the JSON response into a Lyrics model via the dedicated parser.
-                using IDisposable _ = text.ParseJson(out var json);
+                using IDisposable _ = text.GetJson(out var json);
                 return LyricResultParser.Parse(json);
             }
             catch (HttpRequestException ex)

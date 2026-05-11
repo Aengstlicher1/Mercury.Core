@@ -10,7 +10,7 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class AlbumParser
     {
-        public static Album Parse(JElement renderer, string browseId)
+        public static Album Parse(JObject renderer, string browseId)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 

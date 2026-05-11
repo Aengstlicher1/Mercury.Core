@@ -17,15 +17,15 @@ namespace Mercury.Core.Json.Parsers.Generic
                 .Get("text")
                 .Get("runs")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
             
             return RunsParser.Parse(runs, runIndex);
         }
 
-        internal static JArray GetFlex(JElement renderer)
+        internal static JArray GetFlex(JObject renderer)
             =>  renderer
                 .Get("flexColumns")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
     }
 }

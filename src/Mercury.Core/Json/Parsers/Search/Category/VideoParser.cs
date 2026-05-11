@@ -6,7 +6,7 @@ namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class VideoParser
     {
-        internal static Video Parse(JElement renderer)
+        internal static Video Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 

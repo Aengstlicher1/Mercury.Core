@@ -10,7 +10,7 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class PodcastParser
     {
-        public static Podcast Parse(JElement renderer, string browseId)
+        public static Podcast Parse(JObject renderer, string browseId)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 

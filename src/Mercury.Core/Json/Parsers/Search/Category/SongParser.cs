@@ -6,7 +6,7 @@ namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class SongParser
     {
-        public static Song Parse(JElement renderer)
+        public static Song Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
@@ -16,7 +16,7 @@ namespace Mercury.Core.Json.Parsers.Search.Category
                 .Get("text")
                 .Get("runs")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
 
             // Assemble Song
             return new Song()

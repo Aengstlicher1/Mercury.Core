@@ -7,7 +7,7 @@ namespace Mercury.Core.Json.Parsers.Search
 {
     internal static class EpisodeParser
     {
-        internal static Episode Parse(JElement renderer)
+        internal static Episode Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
@@ -24,7 +24,7 @@ namespace Mercury.Core.Json.Parsers.Search
                     .Get("watchEndpoint")
                     .Get("videoId")
                     .AsString()
-                    .Or(string.Empty),
+                    .UnlessNull(string.Empty),
                 Title = FlexColumnParser.Parse(flex, 0),
                 Date = FlexColumnParser.Parse(flex, 1, 2),
                 PodcastName = FlexColumnParser.Parse(flex, 1, 4),

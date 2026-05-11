@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.ComponentModel;
+using System.Net.Http.Headers;
 using Mercury.Core.Json;
 using Mercury.Core.Utils;
 using System.Text;
@@ -20,7 +21,7 @@ namespace Mercury.Core.Network
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        public static async Task<string> SendAsync
+        private static async Task<string> SendAsync
         (
             string url,
             HttpMethod method,
@@ -29,7 +30,7 @@ namespace Mercury.Core.Network
             CancellationToken cToken = default
         )
         {
-            var client = clientType.ToClient();
+            var client = clientType.GetClient();
             if (client == null) throw new ArgumentNullException("ClientType");
 
             Dictionary<string, object?> body = payload ?? [];
@@ -51,6 +52,18 @@ namespace Mercury.Core.Network
             return content;
         }
 
+        private static Client? GetClient(this ClientType type) =>
+            type switch
+            {
+                ClientType.None => null,
+                ClientType.WebMusic => Client.WebMusic.Clone(),
+                ClientType.IOSMusic => Client.IOSMusic.Clone(),
+                ClientType.Web => Client.Web.Clone(),
+                ClientType.Android => Client.Android.Clone(),
+                ClientType.AndroidVR => Client.AndroidVR.Clone(),
+                _ => throw new InvalidEnumArgumentException($"Invalid client type: {type}.")
+            };
+        
         private static async Task<HttpResponseMessage> BuildAndSendAsync(
             string url,
             Client client,
@@ -159,7 +172,7 @@ namespace Mercury.Core.Network
             var responseJson = await response.Content.ReadAsStringAsync(ct);
 
             using var doc = JsonDocument.Parse(responseJson);
-            return new JElement(doc.RootElement)
+            return new JObject(doc.RootElement)
                 .Get("responseContext")
                 .Get("visitorData")
                 .AsString()!;

@@ -5,17 +5,17 @@ namespace Mercury.Core.Json.Parsers.Generic;
 
 internal static class EntityParser
 {
-    public static Entity Parse(JElement element)
+    public static Entity Parse(JObject @object)
     {
         return new Entity()
         {
-            Name = element.Get("text").AsString().Or(string.Empty),
-            Id = element
+            Name = @object.Get("text").AsString().UnlessNull(string.Empty),
+            Id = @object
                 .Get("navigationEndpoint")
                 .Get("browseEndpoint")
                 .Get("browseId")
                 .AsString()
-                .Or(string.Empty)
+                .UnlessNull(string.Empty)
         };
     }
 }

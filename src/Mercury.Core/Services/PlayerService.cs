@@ -45,20 +45,20 @@ namespace Mercury.Core.Services
 
             var response = await RequestHandler.PostAsync(Endpoints.Player, payload, ClientType.AndroidVR, cToken);
 
-            using IDisposable _ = response.ParseJson(out var json);
+            using IDisposable _ = response.GetJson(out var json);
 
             // Parse both muxed and adaptive format arrays from the streaming data.
             JArray formats = json
                 .Get("streamingData")
                 .Get("formats")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
 
             JArray adaptiveFormats = json
                 .Get("streamingData")
                 .Get("adaptiveFormats")
                 .AsArray()
-                .Or(JArray.Empty);
+                .UnlessNull(JArray.Empty);
 
             // Combine both format lists for a single pass.
             var allFormats = formats.Concat(adaptiveFormats);

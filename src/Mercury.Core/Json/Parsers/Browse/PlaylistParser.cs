@@ -11,7 +11,7 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class PlaylistParser
     {
-        public static Playlist Parse(JElement renderer, string browseId)
+        public static Playlist Parse(JObject renderer, string browseId)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 
@@ -22,7 +22,7 @@ namespace Mercury.Core.Json.Parsers.Browse
                 .Get("text")
                 .Get("content")
                 .AsString()
-                .Or(string.Empty);
+                .UnlessNull(string.Empty);
             var entityId = renderer
                 .Get("facepile")
                 .Get("avatarStackViewModel")
@@ -33,7 +33,7 @@ namespace Mercury.Core.Json.Parsers.Browse
                 .Get("browseEndpoint")
                 .Get("browseId")
                 .AsString()
-                .Or(string.Empty);
+                .UnlessNull(string.Empty);
 
             return new Playlist()
             {

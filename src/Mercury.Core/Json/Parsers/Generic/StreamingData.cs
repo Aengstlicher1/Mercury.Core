@@ -6,13 +6,13 @@ namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class StreamingDataParser
     {
-        public static StreamingData Parse(JElement json)
+        public static StreamingData Parse(JObject json)
         {
             var expiresIn = TimeSpan.FromSeconds(int.Parse(json
                 .Get("streamingData")
                 .Get("expiresInSeconds")
                 .AsString()
-                .Or(string.Empty)));
+                .UnlessNull(string.Empty)));
 
             var details = json
                 .Get("videoDetails");
@@ -20,10 +20,10 @@ namespace Mercury.Core.Json.Parsers.Generic
             return new StreamingData()
             {
                 ExpiresAt = DateTime.Now + expiresIn,
-                Id = details.Get("videoId").AsString().Or(string.Empty),
-                Title = details.Get("title").AsString().Or(string.Empty),
-                Duration = TimeSpan.FromSeconds(int.Parse(details.Get("lengthSeconds").AsString().Or(string.Empty))),
-                ViewCount = int.Parse(details.Get("viewCount").AsString().Or(string.Empty))
+                Id = details.Get("videoId").AsString().UnlessNull(string.Empty),
+                Title = details.Get("title").AsString().UnlessNull(string.Empty),
+                Duration = TimeSpan.FromSeconds(int.Parse(details.Get("lengthSeconds").AsString().UnlessNull(string.Empty))),
+                ViewCount = int.Parse(details.Get("viewCount").AsString().UnlessNull(string.Empty))
             };
         }
     }

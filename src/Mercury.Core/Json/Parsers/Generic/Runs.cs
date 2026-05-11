@@ -11,12 +11,12 @@ namespace Mercury.Core.Json.Parsers.Generic
     {
         public static string Parse(JArray runs, int runIndex = 0)
         {
-            return runs[runIndex].Get("text").AsString().Or(string.Empty);
+            return runs[runIndex].Get("text").AsString().UnlessNull(string.Empty);
         }
 
-        public static JArray GetRuns(JElement parent)
+        public static JArray GetRuns(JObject parent)
         {
-            return parent.Get("runs").AsArray().Or(JArray.Empty);
+            return parent.Get("runs").AsArray().UnlessNull(JArray.Empty);
         }
     }
 }

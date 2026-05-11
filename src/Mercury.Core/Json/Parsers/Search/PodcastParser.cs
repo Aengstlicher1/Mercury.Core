@@ -6,7 +6,7 @@ namespace Mercury.Core.Json.Parsers.Search
 {
     internal static class PodcastParser
     {
-        internal static Podcast Parse(JElement renderer)
+        internal static Podcast Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 

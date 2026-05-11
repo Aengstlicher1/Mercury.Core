@@ -11,14 +11,14 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class SongParser
     {
-        public static Song Parse(JElement renderer)
+        public static Song Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(renderer);
 
             return new Song()
             {
-                Id = renderer.Get("videoId").AsString().Or(string.Empty),
-                Title = renderer.Get("title").Get("runs").GetAt(0).Get("text").AsString().Or(string.Empty),
+                Id = renderer.Get("videoId").AsString().UnlessNull(string.Empty),
+                Title = renderer.Get("title").Get("runs").GetAt(0).Get("text").AsString().UnlessNull(string.Empty),
                 Artist = EntityParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText"))[0]),
                 Album = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("longBylineText")), 2),
                 Duration = RunsParser.Parse(RunsParser.GetRuns(renderer.Get("lengthText"))),

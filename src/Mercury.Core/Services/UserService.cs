@@ -123,7 +123,7 @@ public class UserService
 
         cToken.ThrowIfCancellationRequested();
 
-        using IDisposable _ = response.ParseJson(out var json);
+        using IDisposable _ = response.GetJson(out var json);
 
         var tabRender = json
             .Get("contents")
@@ -140,7 +140,7 @@ public class UserService
             .Get("gridRenderer")
             .Get("items")
             .AsArray()
-            .Or(JArray.Empty);
+            .UnlessNull(JArray.Empty);
 
         Collection<Playlist> playlists = [];
 
@@ -151,7 +151,7 @@ public class UserService
 
         return new UserLibrary()
         {
-            Title = tabRender.Get("title").AsString().Or(string.Empty),
+            Title = tabRender.Get("title").AsString().UnlessNull(string.Empty),
             Playlists = playlists
         };
     }

@@ -7,7 +7,7 @@ namespace Mercury.Core.Json.Parsers.Search.Category
 {
     internal static class PlaylistParser
     {
-        internal static Playlist Parse(JElement renderer)
+        internal static Playlist Parse(JObject renderer)
         {
             var thumbnails = ThumbnailParser.Parse(ThumbnailParser.GetThumbRenderer(renderer));
 

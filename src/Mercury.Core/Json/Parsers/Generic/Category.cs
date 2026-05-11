@@ -11,7 +11,7 @@ namespace Mercury.Core.Json.Parsers.Generic
 {
     internal static class CategoryParser
     {
-        internal static MediaCategory Parse(JElement renderer)
+        internal static MediaCategory Parse(JObject renderer)
         {
             var flex = FlexColumnParser.GetFlex(renderer);
             var category = FlexColumnParser.Parse(flex, 1);
@@ -23,7 +23,7 @@ namespace Mercury.Core.Json.Parsers.Generic
                 .Get("browseEndpointContextMusicConfig")
                 .Get("pageType")
                 .AsString()
-                .Or(string.Empty);
+                .UnlessNull(string.Empty);
                 
             if (pageType.Contains("MUSIC_PAGE_TYPE_PODCAST_SHOW_DETAIL_PAGE"))
                 return MediaCategory.Episode;

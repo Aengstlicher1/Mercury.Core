@@ -11,13 +11,13 @@ namespace Mercury.Core.Json.Parsers.Browse
 {
     internal static class EpisodeParser
     {
-        public static Episode Parse(JElement nextRenderer, JElement browseRenderer)
+        public static Episode Parse(JObject nextRenderer, JObject browseRenderer)
         {
             var thumbnails = ThumbnailParser.Parse(nextRenderer);
 
             return new Episode()
             {
-                Id = nextRenderer.Get("videoId").AsString().Or(string.Empty),
+                Id = nextRenderer.Get("videoId").AsString().UnlessNull(string.Empty),
                 Title = RunsParser.Parse(RunsParser.GetRuns(nextRenderer.Get("title"))),
                 PodcastName = RunsParser.Parse(RunsParser.GetRuns(nextRenderer.Get("longBylineText"))),
                 Duration = RunsParser.Parse(RunsParser.GetRuns(nextRenderer.Get("lengthText"))),

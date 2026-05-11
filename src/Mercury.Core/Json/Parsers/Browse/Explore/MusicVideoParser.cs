@@ -6,7 +6,7 @@ namespace Mercury.Core.Json.Parsers.Browse.Explore;
 
 internal static class MusicVideoParser
 {
-    public static Video? Parse(JElement renderer)
+    public static Video? Parse(JObject renderer)
     {
         var thumbnails = ThumbnailParser.Parse(renderer.Get("thumbnailRenderer").Get("musicThumbnailRenderer"));
         
@@ -20,7 +20,7 @@ internal static class MusicVideoParser
                 .Get("browseEndpoint")
                 .Get("browseId")
                 .AsString()
-                .Or(string.Empty),
+                .UnlessNull(string.Empty),
             
             Title = renderer
                 .Get("title")
@@ -28,7 +28,7 @@ internal static class MusicVideoParser
                 .GetAt(0)
                 .Get("text")
                 .AsString()
-                .Or(string.Empty),
+                .UnlessNull(string.Empty),
             
             Artist = EntityParser.Parse(
                 renderer
@@ -41,7 +41,7 @@ internal static class MusicVideoParser
                 .GetAt(2)
                 .Get("text")
                 .AsString()
-                .Or(string.Empty),
+                .UnlessNull(string.Empty),
             Thumbnails = thumbnails,
         };
         

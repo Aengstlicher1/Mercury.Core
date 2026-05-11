@@ -8,7 +8,7 @@ namespace Mercury.Core.Json.Parsers.User;
 
 internal static class PlaylistParser
 {
-    public static Playlist Parse(JElement renderer)
+    public static Playlist Parse(JObject renderer)
     {
         var thumbnails = ThumbnailParser.Parse(renderer
             .Get("thumbnailRenderer")
@@ -19,7 +19,7 @@ internal static class PlaylistParser
             .Get("subtitle")
             .Get("runs")
             .AsArray()
-            .Or(JArray.Empty)
+            .UnlessNull(JArray.Empty)
             .Length == 1;
         
         return new Playlist()
@@ -31,7 +31,7 @@ internal static class PlaylistParser
                 .GetAt(0)
                 .Get("text")
                 .AsString()
-                .Or(string.Empty),
+                .UnlessNull(string.Empty),
             Artist = isAuto 
                 ? Entity.YoutubeMusic
                 : EntityParser.Parse(renderer

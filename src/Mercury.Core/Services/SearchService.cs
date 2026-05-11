@@ -58,7 +58,7 @@ namespace Mercury.Core.Services
 
                 cToken.ThrowIfCancellationRequested();
 
-                using IDisposable _ = response.ParseJson(out var json);
+                using IDisposable _ = response.GetJson(out var json);
 
                 var renderers = json
                     .Get("contents")
@@ -77,7 +77,7 @@ namespace Mercury.Core.Services
                     .GetAt(2).Get("musicShelfRenderer")
                     .Get("contents")
                     .AsArray()
-                    .Or(JArray.Empty);
+                    .UnlessNull(JArray.Empty);
 
                 Collection<Media> results = new Collection<Media>();
 
@@ -163,7 +163,7 @@ namespace Mercury.Core.Services
                 var response = await RequestHandler.PostAsync(Endpoints.Search, payload, ClientType.WebMusic, cToken);
                 Debug.WriteLine($"Core: \"Sending Search Request\" took { DateTime.Now - startTime}");
 
-                using IDisposable _ = response.ParseJson(out var json);
+                using IDisposable _ = response.GetJson(out var json);
 
                 var shelfResults = json
                     .Get("contents")
@@ -177,7 +177,7 @@ namespace Mercury.Core.Services
                     .Get("musicShelfRenderer")
                     .Get("contents")
                     .AsArray()
-                    .Or(JArray.Empty);
+                    .UnlessNull(JArray.Empty);
 
                 Collection<Media> results = new Collection<Media>();
 
