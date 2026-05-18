@@ -24,7 +24,7 @@ internal static class AuthParser
         "APISID",
         "VISITOR_INFO1_LIVE"
     ];
-    
+
     /// <summary>
     /// Takes a raw Cookie header string and turns it into a usable format
     /// </summary>
@@ -32,43 +32,9 @@ internal static class AuthParser
     /// <returns>A <see cref="CookieAuthTokens"/> object, which contains all needed and optional cookies.</returns>
     public static CookieAuthTokens Parse(string headerString)
     {
-        var cookies = PrepareHeader(headerString);
-        var cleanHeader = BuildCleanHeader(cookies);
+        var cookies = new Dictionary<string, string>();
 
-        return new CookieAuthTokens
-        {
-            SAPISID          = Get("SAPISID"),
-            Secure3PAPISID   = Get("__Secure-3PAPISID"),
-            Secure3PSID      = Get("__Secure-3PSID"),
-            SID              = Get("SID"),
-            HSID             = Get("HSID"),
-            SSID             = Get("SSID"),
-            SIDCC            = Get("SIDCC"),
-            LoginInfo        = Get("LOGIN_INFO"),
-            Secure1PSID      = Get("__Secure-1PSID"),
-            Secure1PAPISID   = Get("__Secure-1PAPISID"),
-            Secure1PSIDCC    = Get("__Secure-1PSIDCC"),
-            Secure3PSIDCC    = Get("__Secure-3PSIDCC"),
-            Secure1PSIDTS    = Get("__Secure-1PSIDTS"),
-            Secure3PSIDTS    = Get("__Secure-3PSIDTS"),
-            APISID           = Get("APISID"),
-            VisitorInfo      = Get("VISITOR_INFO1_LIVE"),
-            RawCookies = cleanHeader
-        };
-
-        string Get(string key) => cookies.GetValueOrDefault(key, string.Empty);
-    }
-
-    private static string BuildCleanHeader(Dictionary<string, string> cookies) =>
-        string.Join("; ", WantedCookies
-            .Where(cookies.ContainsKey)
-            .Select(key => $"{key}={cookies[key]}"));
-    
-    private static Dictionary<string, string> PrepareHeader(string header)
-    {
-        var dict = new Dictionary<string, string>();
-
-        foreach (var part in header.Replace(" ", "").Split(';'))
+        foreach (var part in headerString.Replace(" ", "").Split(';'))
         {
             var trimmed = part.Trim();
             if (string.IsNullOrEmpty(trimmed)) continue;
@@ -79,9 +45,9 @@ internal static class AuthParser
             var key = trimmed[..eqIndex].Trim();
             var value = trimmed[(eqIndex + 1)..].Trim();
 
-            dict[key] = value;
+            cookies[key] = value;
         }
-        
-        return dict;
+
+        return new CookieAuthTokens(cookies);
     }
 }
