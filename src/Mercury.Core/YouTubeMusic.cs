@@ -30,6 +30,6 @@ namespace Mercury.Core
         /// <summary>
         /// The User service to authenticate the User and get user specific data
         /// </summary>
-        public static readonly UserService   User   = new UserService();
+        public static readonly UserService User = new UserService();
     }
 }

@@ -8,17 +8,17 @@ internal static class Endpoints
     /// <summary>
     /// The base URL for the YouTube Music API.
     /// </summary>
-    const string MusicApiUrl = "https://music.youtube.com/youtubei/v1";
+    public const string MusicApiUrl = "https://music.youtube.com/youtubei/v1";
 
     /// <summary>
     /// The base URL for the YouTube Music web page.
     /// </summary>
-    const string MusicWebUrl = "https://music.youtube.com";
+    public const string MusicWebUrl = "https://music.youtube.com";
 
     /// <summary>
     /// The base URL for the Youtube API.
     /// </summary>
-    const string YoutubeApiUrl = "https://www.youtube.com/youtubei/v1";
+    public const string YoutubeApiUrl = "https://www.youtube.com/youtubei/v1";
 
 
     /// <summary>

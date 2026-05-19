@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+﻿namespace Mercury.Core.Network;
 
 internal sealed class Client : Dictionary<string, object>
 {
@@ -24,7 +24,20 @@ internal sealed class Client : Dictionary<string, object>
         ["screenPixelDensity"] = 1,
         ["userInterfaceTheme"] = "USER_INTERFACE_THEME_DARK",
         ["timeZone"] = "UTC",
-        ["utcOffsetMinutes"] = 0
+        ["utcOffsetMinutes"] = 0,
+        Headers = new Dictionary<string, string>
+        {
+            ["Origin"] = "https://music.youtube.com",
+            ["X-Origin"] = "https://music.youtube.com",
+            ["Referer"] = "https://music.youtube.com/",
+            ["X-Youtube-Client-Name"] = "67",
+            ["X-Youtube-Client-Version"] = "1.20251111.09.00",
+            ["Accept"] = "*/*",
+            ["Accept-Language"] = "en-US,en;q=0.9",
+            ["Sec-Fetch-Site"] = "same-origin",
+            ["Sec-Fetch-Mode"] = "same-origin",
+            ["Sec-Fetch-Dest"] = "empty",
+        },
     };
 
     public static readonly Client IOSMusic = new()
@@ -46,7 +59,15 @@ internal sealed class Client : Dictionary<string, object>
         ["screenPixelDensity"] = 1,
         ["userInterfaceTheme"] = "USER_INTERFACE_THEME_DARK",
         ["timeZone"] = "UTC",
-        ["utcOffsetMinutes"] = 0
+        ["utcOffsetMinutes"] = 0,
+        Headers = new Dictionary<string, string>
+        {
+            ["X-Goog-Api-Format-Version"] = "2",
+            ["X-Youtube-Client-Name"] = "26",
+            ["X-Youtube-Client-Version"] = "7.21.50",
+            ["Accept"] = "*/*",
+            ["Accept-Language"] = "en-US,en;q=0.9",
+        },
     };
 
     public static readonly Client Web = new()
@@ -72,7 +93,20 @@ internal sealed class Client : Dictionary<string, object>
         ["userInterfaceTheme"] = "USER_INTERFACE_THEME_DARK",
         ["timeZone"] = "UTC",
         ["utcOffsetMinutes"] = 0,
-        ApiKey = "?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+        ApiKey = "?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+        Headers = new Dictionary<string, string>
+        {
+            ["Origin"] = "https://www.youtube.com",
+            ["X-Origin"] = "https://www.youtube.com",
+            ["Referer"] = "https://www.youtube.com/",
+            ["X-Youtube-Client-Name"] = "1",
+            ["X-Youtube-Client-Version"] = "2.20250312.04.00",
+            ["Accept"] = "*/*",
+            ["Accept-Language"] = "en-US,en;q=0.9",
+            ["Sec-Fetch-Site"] = "same-origin",
+            ["Sec-Fetch-Mode"] = "same-origin",
+            ["Sec-Fetch-Dest"] = "empty",
+        },
     };
 
     public static readonly Client Android = new()
@@ -90,7 +124,14 @@ internal sealed class Client : Dictionary<string, object>
         ["userAgent"] = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; US) gzip",
         ["timeZone"] = "UTC",
         ["utcOffsetMinutes"] = 0,
-        Headers = [ new("X-Goog-Api-Format-Version", "2") ]
+        Headers = new Dictionary<string, string>
+        {
+            ["X-Goog-Api-Format-Version"] = "2",
+            ["X-Youtube-Client-Name"] = "3",
+            ["X-Youtube-Client-Version"] = "19.29.37",
+            ["Accept"] = "*/*",
+            ["Accept-Language"] = "en-US,en;q=0.9",
+        },
     };
 
     public static readonly Client AndroidVR = new()
@@ -108,12 +149,19 @@ internal sealed class Client : Dictionary<string, object>
         ["userAgent"] = "com.google.android.apps.youtube.vr.oculus/1.60.19 (Linux; U; Android 12L; US) gzip",
         ["timeZone"] = "UTC",
         ["utcOffsetMinutes"] = 0,
-        ApiKey = "?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39wnew"
+        ApiKey = "?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39wnew",
+        Headers = new Dictionary<string, string>
+        {
+            ["X-Goog-Api-Format-Version"] = "2",
+            ["X-Youtube-Client-Name"] = "28",
+            ["X-Youtube-Client-Version"] = "1.60.19",
+            ["Accept"] = "*/*",
+            ["Accept-Language"] = "en-US,en;q=0.9",
+        },
     };
-
-    // ── Convenience Properties ───────────────────────────────────────────
-
-    public KeyValuePair<string, string>[]? Headers
+    
+    
+    public Dictionary<string, string>? Headers
     {
         get;
         set;
@@ -172,15 +220,14 @@ internal sealed class Client : Dictionary<string, object>
         get => (int)this["utcOffsetMinutes"];
         set => this["utcOffsetMinutes"] = value;
     }
-
-    // ── Methods ──────────────────────────────────────────────────────────
-
+    
+    
     public Client Clone()
     {
         var copy = new Client();
         foreach (var kvp in this)
             copy[kvp.Key] = kvp.Value;
-        copy.Headers = Headers?.ToArray();
+        copy.Headers = Headers;
         return copy;
     }
 }

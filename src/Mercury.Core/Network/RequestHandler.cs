@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Net;
 using System.Net.Http.Headers;
 using Mercury.Core.Json;
 using Mercury.Core.Utils;
@@ -11,16 +13,20 @@ namespace Mercury.Core.Network
     {
         internal static string VisitorData { get; set; } = "";
 
-        public readonly static HttpClient httpClient = new HttpClient();
+        public static HttpClient Client { get; } = new HttpClient(new HttpClientHandler()
+        {
+            UseCookies = false,
+            AutomaticDecompression = DecompressionMethods.All
+        });
         public static int RequestRetryAmount { get; set; } = 5;
         public static string geoLocation { get; set; } = "US";
-
-        readonly static JsonSerializerOptions jsonOptions = new()
+        
+        static readonly JsonSerializerOptions jsonOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
-
+        
         private static async Task<string> SendAsync
         (
             string url,
@@ -34,14 +40,14 @@ namespace Mercury.Core.Network
             if (client == null) throw new ArgumentNullException("ClientType");
 
             Dictionary<string, object?> body = payload ?? [];
-
+            
             HttpResponseMessage response = await BuildAndSendAsync(url, client, body, cToken);
             string content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
-
+            
             // Retry on bot detection
             for (int i = 0; i < RequestRetryAmount && IsBotResponse(response, content); i++)
             {
-                VisitorData = await FetchVisitorDataAsync();
+                VisitorData = await GetVisitorDataAsync(cToken);
                 response = await BuildAndSendAsync(url, client, body, cToken);
                 content = await response.Content.ReadAsStringAsync(cToken).ConfigureAwait(false);
             }
@@ -56,11 +62,11 @@ namespace Mercury.Core.Network
             type switch
             {
                 ClientType.None => null,
-                ClientType.WebMusic => Client.WebMusic.Clone(),
-                ClientType.IOSMusic => Client.IOSMusic.Clone(),
-                ClientType.Web => Client.Web.Clone(),
-                ClientType.Android => Client.Android.Clone(),
-                ClientType.AndroidVR => Client.AndroidVR.Clone(),
+                ClientType.WebMusic => Mercury.Core.Network.Client.WebMusic.Clone(),
+                ClientType.IOSMusic => Mercury.Core.Network.Client.IOSMusic.Clone(),
+                ClientType.Web => Mercury.Core.Network.Client.Web.Clone(),
+                ClientType.Android => Mercury.Core.Network.Client.Android.Clone(),
+                ClientType.AndroidVR => Mercury.Core.Network.Client.AndroidVR.Clone(),
                 _ => throw new InvalidEnumArgumentException($"Invalid client type: {type}.")
             };
         
@@ -72,35 +78,31 @@ namespace Mercury.Core.Network
         )
         {
             if (string.IsNullOrWhiteSpace(VisitorData))
-                VisitorData = await FetchVisitorDataAsync(cToken);
-
-            Uri requestUri = YoutubeMusic.User.IsAuthenticated
-                ? new Uri(url + "?prettyPrint=false")
-                : new Uri(url + client.ApiKey);
+                VisitorData = await GetVisitorDataAsync(cToken);
+            
+            string suffix = string.IsNullOrWhiteSpace(client.ApiKey)
+                ? "?prettyPrint=false"
+                : $"{client.ApiKey}&prettyPrint=false";
+            Uri requestUri = new(YoutubeMusic.User.IsAuthenticated
+                ? url + "?prettyPrint=false"
+                : url + suffix);
+            
             HttpRequestMessage request = new(HttpMethod.Post, requestUri);
 
             client.Gl = geoLocation;
             client.VisitorData = VisitorData;
             body["context"] = new Dictionary<string, object> { ["client"] = client };
-
-            request.Headers.Add("User-Agent", client.UserAgent);
-
+            
             if (client.Headers != null)
                 foreach (var header in client.Headers)
                     request.Headers.Add(header.Key, header.Value);
-
-            // Handle authenticated requests with additional headers, while keeping the unauthenticated requests working
+            
+            request.Headers.Add("X-Goog-Visitor-Id", VisitorData);
+            
             if (YoutubeMusic.User.IsAuthenticated)
             {
-                request.Headers.TryAddWithoutValidation("Authorization", YoutubeMusic.User.GenerateSapiSidHash());
-                request.Headers.Add("Cookie", YoutubeMusic.User.CurrentAuthTokens!.ToCookieHeader());
-                request.Headers.Add("Origin", "https://music.youtube.com");
-                request.Headers.Add("X-Origin", "https://music.youtube.com");
-                request.Headers.Add("Referer", "https://music.youtube.com/");
-                request.Headers.Add("X-Goog-AuthUser", "0");
+                YoutubeMusic.User.CurrentAuth!.ModifyHeader(request.Headers);
                 request.Headers.Add("X-Youtube-Bootstrap-Logged-In", "true");
-                request.Headers.Add("X-Youtube-Client-Name", "67");
-                request.Headers.Add("X-Youtube-Client-Version", "1.20260426.12.00");
             }
             
             if (body.Count != 0)
@@ -111,7 +113,7 @@ namespace Mercury.Core.Network
 
             cToken.ThrowIfCancellationRequested();
 
-            return await httpClient.SendAsync(request, cToken).ConfigureAwait(false);
+            return await Client.SendAsync(request, cToken).ConfigureAwait(false);
         }
 
         private static bool IsBotResponse(HttpResponseMessage response, string content)
@@ -143,7 +145,7 @@ namespace Mercury.Core.Network
             return await SendAsync( url, HttpMethod.Post, payload, clientType, cToken).ConfigureAwait(false);
         }
 
-        public static async Task<string> FetchVisitorDataAsync(CancellationToken ct = default)
+        public static async Task<JObject> FetchResponseContext(CancellationToken ct = default)
         {
             var payload = new Dictionary<string, object>
             {
@@ -168,14 +170,17 @@ namespace Mercury.Core.Network
             };
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36");
 
-            var response = await httpClient.SendAsync(request, ct);
+            var response = await Client.SendAsync(request, ct);
             var responseJson = await response.Content.ReadAsStringAsync(ct);
 
-            using var doc = JsonDocument.Parse(responseJson);
-            return new JObject(doc.RootElement)
-                .Get("responseContext")
-                .Get("visitorData")
-                .AsString()!;
+            var doc = new JObject(JsonDocument.Parse(responseJson).RootElement);
+            return doc.Get("responseContext");
         }
+        
+        public static async Task<string> GetVisitorDataAsync(CancellationToken ct = default)
+            => (await FetchResponseContext(ct))
+                .Get("visitorData")
+                .AsString()
+                .UnlessNull(string.Empty);
     }
 }

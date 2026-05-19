@@ -57,7 +57,7 @@ namespace Mercury.Core.Services
                 if (track.DurationTimeSpan.TotalSeconds > 0)
                     url += $"&duration={Convert.ToInt32(track.DurationTimeSpan.TotalSeconds)}";
 
-                var response = await RequestHandler.httpClient.GetAsync(url);
+                var response = await RequestHandler.Client.GetAsync(url);
 
                 // A non-success status (most commonly 404) means no lyrics were found.
                 if (!response.IsSuccessStatusCode)

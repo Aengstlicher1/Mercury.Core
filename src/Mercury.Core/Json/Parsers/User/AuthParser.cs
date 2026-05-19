@@ -30,7 +30,7 @@ internal static class AuthParser
     /// </summary>
     /// <param name="headerString">The raw cookie header string</param>
     /// <returns>A <see cref="CookieAuthTokens"/> object, which contains all needed and optional cookies.</returns>
-    public static CookieAuthTokens Parse(string headerString)
+    public static Dictionary<string, string> Parse(string headerString)
     {
         var cookies = new Dictionary<string, string>();
 
@@ -48,6 +48,6 @@ internal static class AuthParser
             cookies[key] = value;
         }
 
-        return new CookieAuthTokens(cookies);
+        return cookies;
     }
 }
